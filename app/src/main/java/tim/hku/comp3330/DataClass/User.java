@@ -1,0 +1,51 @@
+package tim.hku.comp3330.DataClass;
+
+import android.graphics.Bitmap;
+
+public class User {
+    private int userID; // system generated, cannot be modified once user created
+    private String userName;
+    // private Bitmap userIcon;
+    private String loginName;
+    private String password;
+    public User() {}
+    public User(int userID, String userName, String loginName, String password/*, Bitmap userIcon*/) {
+        this.userID = userID;
+        this.userName = userName;
+        this.loginName = loginName;
+        this.password = password;
+        //this.userIcon = userIcon;
+    }
+    // getters and setters
+    public int getUserID() {
+        return userID;
+    }
+    public String getUserName() {
+        return userName;
+    }
+    /*public Bitmap getUserIcon() {
+        return userIcon;
+    }*/
+    public String getLoginName() {
+        return loginName;
+    }
+    public String getPassword() {
+        return password;
+    }
+    public void setLoginName(String loginName) {
+        this.loginName = loginName;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+    /*public void setUserIcon(Bitmap userIcon) {
+        this.userIcon = userIcon;
+    }*/
+
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
+}
