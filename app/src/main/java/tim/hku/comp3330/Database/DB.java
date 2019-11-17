@@ -127,7 +127,23 @@ public class DB extends SQLiteOpenHelper {
         db.close();
         return users;
     }
-
+    public User GetUserByLoginName(String login) {
+        String query = "Select * FROM " + USERS + " WHERE " + LOGIN_NAME + " = " + login;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        User users = new User();
+        if (cursor.moveToFirst()) {
+            cursor.moveToFirst();
+            users.setUserID(Integer.parseInt(cursor.getString(0)));
+            users.setUserName(cursor.getString(1));
+            //users.setUserIcon(DBUtil.getImage(cursor.getBlob(2)));
+            cursor.close();
+        } else {
+            users = null;
+        }
+        db.close();
+        return users;
+    }
 
     public boolean deleteUser(int ID) {
         boolean result = false;
@@ -184,7 +200,7 @@ public class DB extends SQLiteOpenHelper {
         db.close();
     }
 
-    public Project GetProject(int projectID) {
+    public Project GetProjectByProjectID(int projectID) {
         String query = "Select * FROM " + PROJECT + " WHERE " + PROJECT_ID + " = " + projectID;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -201,6 +217,25 @@ public class DB extends SQLiteOpenHelper {
         }
         db.close();
         return project;
+    }
+    public List<Project> GetProjectByUserID(int userID){
+        List<Project> projList = new ArrayList<Project>();
+        String query = "Select * FROM " + PROJECT + " WHERE " + OWNER_ID + " = " + userID;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            do{
+                Project project = new Project();
+                project.setProjectID(Integer.parseInt(cursor.getString(0)));
+                project.setProjectName(cursor.getString(1));
+                project.setProjectDescription(cursor.getString(2));
+                project.setOwnerID(Integer.parseInt(cursor.getString(3)));
+                projList.add(project);
+            }while(cursor.moveToNext());
+            cursor.close();
+            db.close();
+        }
+        return projList;
     }
     public boolean deleteProject(int projID) {
         boolean result = false;

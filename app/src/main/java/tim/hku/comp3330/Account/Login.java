@@ -15,6 +15,9 @@ import android.util.Log;
 import android.view.View;
 import android.os.Bundle;
 
+import java.util.List;
+
+import tim.hku.comp3330.DataClass.Project;
 import tim.hku.comp3330.MainActivity;
 import tim.hku.comp3330.R;
 import tim.hku.comp3330.Database.DB;
@@ -57,14 +60,23 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     public void onClick(View v) {
     }
     private void verifyFromSQLite() {
-        if (!inputValidation.isInputEditTextFilled(textInputEditTextEmail, textInputLayoutEmail, getString(R.string.error_message_email))) {
+        if (!inputValidation.isInputEditTextFilled(textInputEditTextEmail, textInputLayoutEmail, getString(R.string.error_message_login))) {
             return;
         }
-        if (!inputValidation.isInputEditTextEmail(textInputEditTextEmail, textInputLayoutEmail, getString(R.string.error_message_email))) {
+        if (!inputValidation.isInputEditTextEmail(textInputEditTextEmail, textInputLayoutEmail, getString(R.string.error_message_login))) {
             return;
         }
-        if (!inputValidation.isInputEditTextFilled(textInputEditTextPassword, textInputLayoutPassword, getString(R.string.error_message_email))) {
+        if (!inputValidation.isInputEditTextFilled(textInputEditTextPassword, textInputLayoutPassword, getString(R.string.error_message_login))) {
             return;
+        }
+        if (database.GetUserByLoginName(textInputEditTextEmail.getText().toString().trim()) != null) {
+            // TODO: start activity and load homepage for the user
+            List<Project> projList = database.GetProjectByUserID(database.GetUserByLoginName(textInputEditTextEmail.getText().toString().trim()).getUserID());
+            emptyInputEditText();
+
+        } else {
+            // Snack Bar to show success message that record is wrong
+            Snackbar.make(nestedScrollView, getString(R.string.error_valid_login_password), Snackbar.LENGTH_LONG).show();
         }
     }
 
