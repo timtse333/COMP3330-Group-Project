@@ -128,7 +128,23 @@ public class DB extends SQLiteOpenHelper {
         db.close();
         return users;
     }
-
+    public User GetUserByLoginName(String loginName){
+        String query = "Select * FROM " + USERS + " WHERE " + LOGIN_NAME + " = " + loginName;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        User users = new User();
+        if (cursor.moveToFirst()) {
+            cursor.moveToFirst();
+            users.setUserID(Integer.parseInt(cursor.getString(0)));
+            users.setUserName(cursor.getString(1));
+            //users.setUserIcon(DBUtil.getImage(cursor.getBlob(2)));
+            cursor.close();
+        } else {
+            users = null;
+        }
+        db.close();
+        return users;
+    }
 
     public boolean deleteUser(int ID) {
         boolean result = false;
@@ -204,6 +220,25 @@ public class DB extends SQLiteOpenHelper {
         }
         db.close();
         return project;
+    }
+    public List<Project> GetProjectByUserID(int userID){
+        String query = "Select * FROM " + PROJECT + " WHERE " + OWNER_ID + " = " + userID;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        List<Project> projList = new ArrayList<Project>();
+        if (cursor.moveToFirst()) {
+            do{
+                Project project = new Project();
+                project.setProjectID(Integer.parseInt(cursor.getString(0)));
+                project.setProjectName(cursor.getString(1));
+                project.setProjectDescription(cursor.getString(2));
+                project.setProjectPic(cursor.getString(3));
+                project.setOwnerID(Integer.parseInt(cursor.getString(4)));
+            }while(cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return projList;
     }
     public int GetProjectNum() { // for getting the total number of projects in the system.
         String query = "Select COUNT(*) FROM " + PROJECT;
