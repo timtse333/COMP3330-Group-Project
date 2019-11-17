@@ -8,15 +8,22 @@ import android.os.Bundle;
 
 import java.util.ArrayList;
 
+import tim.hku.comp3330.DataClass.Project;
+import tim.hku.comp3330.Database.DB;
+
 public class projectList extends AppCompatActivity {
     RecyclerView myRecycleriew;
     projectAdapter myAdapter;
+    DB database;
+    private final AppCompatActivity activity = projectList.this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_list);
 
+
+        database = new DB(activity);
         myRecycleriew = findViewById(R.id.recyclerView);
         myRecycleriew.setLayoutManager(new LinearLayoutManager(this));
 
@@ -24,26 +31,21 @@ public class projectList extends AppCompatActivity {
         myRecycleriew.setAdapter(myAdapter);
     }
 
-    private ArrayList<projectModel> getMyList() {
-        ArrayList<projectModel> models = new ArrayList<>();
+    private ArrayList<Project> getMyList() {
+        ArrayList<Project> models = new ArrayList<>();
 
-        projectModel m = new projectModel();
-        m.setTitle("project 1");
-        m.setDescription("interesting project");
-        m.setImg(R.drawable.project_test);
-        models.add(m);
+        int total = database.GetProjectNum();
 
-        projectModel n = new projectModel();
-        n.setTitle("project 2");
-        n.setDescription("cool project");
-        n.setImg(R.drawable.project_test);
-        models.add(n);
+        for(int i = 0; i<total; i++){
+            models.add(database.GetProject(i));
+        }
 
-        projectModel o = new projectModel();
-        o.setTitle("project 3");
-        o.setDescription("interesting project");
-        o.setImg(R.drawable.project_test);
-        models.add(o);
+//        Project project1 = database.GetProject(0);
+//        Project project2 = database.GetProject(1);
+//        Project project3 = database.GetProject(2);
+//        models.add(project1);
+//        models.add(project2);
+//        models.add(project3);
 
         return models;
 

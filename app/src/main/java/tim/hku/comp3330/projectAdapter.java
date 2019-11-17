@@ -10,11 +10,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import tim.hku.comp3330.DataClass.Project;
+
 public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
     Context c;
-    ArrayList<projectModel> model;
+    ArrayList<Project> model;
 
-    public projectAdapter(Context c, ArrayList<projectModel> model) {
+    public projectAdapter(Context c, ArrayList<Project> model) {
         this.c = c;
         this.model = model;
     }
@@ -29,10 +31,10 @@ public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull projectHolder myHolder, int i) {
-        myHolder.mTitle.setText(model.get(i).getTitle());
-        myHolder.mDes.setText(model.get(i).getDescription());
-        myHolder.mImageView.setImageResource(model.get(i).getImg());
-
+        myHolder.mTitle.setText(model.get(i).getProjectName());
+        myHolder.mDes.setText(model.get(i).getProjectDescription());
+        int img = myHolder.itemView.getContext().getResources().getIdentifier(model.get(i).getProjectPic(),"drawable","tim.hku.comp3330");
+        myHolder.mImageView.setImageResource(img);
     }
 
     @Override
