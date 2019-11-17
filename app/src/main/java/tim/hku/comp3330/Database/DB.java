@@ -29,11 +29,12 @@ public class DB extends SQLiteOpenHelper {
     public static final String PROJECT = "Project";
     public static final String PROJECT_ID = "Project_ID";
     public static final String PROJECT_NAME = "Project_Name";
+    public static final String PROJECT_PIC = "Project_Pic";
     public static final String PROJECT_DESCRIPTION = "Project_Description";
     public static final String OWNER_ID = "Owner_ID";
     // Table Create statements
     String CREATE_USER_TABLE = String.format("CREATE TABLE %s(%s INTEGER PRIMARY KEY AUTOINCREMENT,%s TEXT,%s BLOB,%s TEXT,%s TEXT)", USERS, USER_ID, USER_NAME, USER_ICON, LOGIN_NAME, PASSWORD);
-    String CREATE_PROJECT_TABLE = String.format("CREATE TABLE %s(%s INTEGER PRIMARY KEY AUTOINCREMENT,%s TEXT,%s TEXT,%s INTEGER, FOREIGN KEY (%s) REFERENCES %s(%s))", PROJECT, PROJECT_ID, PROJECT_NAME, PROJECT_DESCRIPTION, OWNER_ID, OWNER_ID, USERS, USER_ID);
+    String CREATE_PROJECT_TABLE = String.format("CREATE TABLE %s(%s INTEGER PRIMARY KEY AUTOINCREMENT,%s TEXT,%s TEXT,%s TEXT,%s INTEGER, FOREIGN KEY (%s) REFERENCES %s(%s))", PROJECT, PROJECT_ID, PROJECT_NAME, PROJECT_DESCRIPTION,PROJECT_PIC,OWNER_ID, OWNER_ID, USERS, USER_ID);
 
 
     public DB(Context context) {
@@ -127,23 +128,7 @@ public class DB extends SQLiteOpenHelper {
         db.close();
         return users;
     }
-    public User GetUserByLoginName(String login) {
-        String query = "Select * FROM " + USERS + " WHERE " + LOGIN_NAME + " = " + login;
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-        User users = new User();
-        if (cursor.moveToFirst()) {
-            cursor.moveToFirst();
-            users.setUserID(Integer.parseInt(cursor.getString(0)));
-            users.setUserName(cursor.getString(1));
-            //users.setUserIcon(DBUtil.getImage(cursor.getBlob(2)));
-            cursor.close();
-        } else {
-            users = null;
-        }
-        db.close();
-        return users;
-    }
+
 
     public boolean deleteUser(int ID) {
         boolean result = false;
@@ -192,15 +177,16 @@ public class DB extends SQLiteOpenHelper {
     public void CreateProject(Project project) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(PROJECT_ID, project.getProjectID());
+//        values.put(PROJECT_ID, project.getProjectID());
         values.put(PROJECT_NAME, project.getProjectName());
         values.put(PROJECT_DESCRIPTION, project.getProjectDescription());
+        values.put(PROJECT_PIC, project.getProjectPic());
         values.put(OWNER_ID, project.getOwnerID());
         db.insert(PROJECT, null, values);
         db.close();
     }
 
-    public Project GetProjectByProjectID(int projectID) {
+    public Project GetProject(int projectID) {
         String query = "Select * FROM " + PROJECT + " WHERE " + PROJECT_ID + " = " + projectID;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -210,7 +196,8 @@ public class DB extends SQLiteOpenHelper {
             project.setProjectID(Integer.parseInt(cursor.getString(0)));
             project.setProjectName(cursor.getString(1));
             project.setProjectDescription(cursor.getString(2));
-            project.setOwnerID(Integer.parseInt(cursor.getString(3)));
+            project.setProjectPic(cursor.getString(3));
+            project.setOwnerID(Integer.parseInt(cursor.getString(4)));
             cursor.close();
         } else {
             project = null;
@@ -218,25 +205,22 @@ public class DB extends SQLiteOpenHelper {
         db.close();
         return project;
     }
-    public List<Project> GetProjectByUserID(int userID){
-        List<Project> projList = new ArrayList<Project>();
-        String query = "Select * FROM " + PROJECT + " WHERE " + OWNER_ID + " = " + userID;
+    public int GetProjectNum() { // for getting the total number of projects in the system.
+        String query = "Select COUNT(*) FROM " + PROJECT;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
+        int total;
         if (cursor.moveToFirst()) {
-            do{
-                Project project = new Project();
-                project.setProjectID(Integer.parseInt(cursor.getString(0)));
-                project.setProjectName(cursor.getString(1));
-                project.setProjectDescription(cursor.getString(2));
-                project.setOwnerID(Integer.parseInt(cursor.getString(3)));
-                projList.add(project);
-            }while(cursor.moveToNext());
+            cursor.moveToFirst();
+            total=(Integer.parseInt(cursor.getString(0)));
             cursor.close();
-            db.close();
+        } else {
+            total = 0;
         }
-        return projList;
+        db.close();
+        return total;
     }
+
     public boolean deleteProject(int projID) {
         boolean result = false;
         String query = "Select * FROM " + PROJECT + " WHERE " + PROJECT_ID + " = " + projID;
@@ -261,6 +245,7 @@ public class DB extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(PROJECT_NAME, project.getProjectName());
         values.put(PROJECT_DESCRIPTION, project.getProjectDescription());
+        values.put(PROJECT_PIC, project.getProjectPic());
         db.update(PROJECT, values, PROJECT_ID + " = " + project.getProjectID(), null);
     }
 
