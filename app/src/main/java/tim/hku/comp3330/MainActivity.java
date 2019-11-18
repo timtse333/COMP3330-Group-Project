@@ -4,9 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
-import android.util.Log;
 import android.view.View;
 
 import androidx.navigation.NavController;
@@ -23,7 +21,6 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
 
-import tim.hku.comp3330.Account.Login;
 import tim.hku.comp3330.Account.Registration;
 
 public class MainActivity extends AppCompatActivity {
@@ -65,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_myprojects, R.id.nav_message,
-                R.id.nav_tools, R.id.nav_share, R.id.nav_send)
+                R.id.nav_tools, R.id.nav_login, R.id.nav_registration)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);

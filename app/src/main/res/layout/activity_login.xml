@@ -25,13 +25,13 @@
             android:src="@drawable/logo" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayoutEmail"
+            android:id="@+id/textInputLayoutLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/textInputEditTextEmail"
+                android:id="@+id/textInputEditTextLogin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_name"

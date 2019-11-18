@@ -11,8 +11,8 @@
     <string name="menu_myprojects">myProjcets</string>
     <string name="menu_message">Messages</string>
     <string name="menu_tools">Tools</string>
-    <string name="menu_share">Share</string>
-    <string name="menu_send">Send</string>
+    <string name="menu_login">Login</string>
+    <string name="menu_registration">Register</string>
 
     <!--Login attributes -->
     <string name="text_accounts">All Accounts</string>

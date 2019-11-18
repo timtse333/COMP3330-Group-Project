@@ -2,26 +2,22 @@ package tim.hku.comp3330.Account;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import androidx.core.widget.NestedScrollView;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
-import android.util.Log;
+
 import android.view.View;
-import android.os.Bundle;
 
 import java.util.List;
 
 import tim.hku.comp3330.DataClass.Project;
-import tim.hku.comp3330.MainActivity;
 import tim.hku.comp3330.R;
 import tim.hku.comp3330.Database.DB;
-import tim.hku.comp3330.Account.InputValidation;
+import tim.hku.comp3330.ui.home.HomeFragment;
 
 public class Login extends AppCompatActivity implements View.OnClickListener {
     private final AppCompatActivity activity = Login.this;
@@ -41,9 +37,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     }
     private void initViews() {
         nestedScrollView = (NestedScrollView) findViewById(R.id.nestedScrollView);
-        textInputLayoutEmail = (TextInputLayout) findViewById(R.id.textInputLayoutEmail);
+        textInputLayoutEmail = (TextInputLayout) findViewById(R.id.textInputLayoutLogin);
         textInputLayoutPassword = (TextInputLayout) findViewById(R.id.textInputLayoutPassword);
-        textInputEditTextLogin = (TextInputEditText) findViewById(R.id.textInputEditTextEmail);
+        textInputEditTextLogin = (TextInputEditText) findViewById(R.id.textInputEditTextLogin);
         textInputEditTextPassword = (TextInputEditText) findViewById(R.id.textInputEditTextPassword);
         appCompatButtonLogin = (AppCompatButton) findViewById(R.id.appCompatButtonLogin);
         textViewLinkRegister = (AppCompatTextView) findViewById(R.id.textViewLinkRegister);
@@ -58,6 +54,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     }
     @Override
     public void onClick(View v) {
+        Intent intent = new Intent(v.getContext(), HomeFragment.class);
+        startActivity(intent);
     }
     private void verifyFromSQLite() {
         if (!inputValidation.isInputEditTextFilled(textInputEditTextLogin, textInputLayoutEmail, getString(R.string.error_message_login))) {
