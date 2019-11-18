@@ -1,6 +1,7 @@
 package tim.hku.comp3330.Database;
 
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.content.Context;
 import android.content.ContentValues;
@@ -129,21 +130,28 @@ public class DB extends SQLiteOpenHelper {
         return users;
     }
     public User GetUserByLoginName(String loginName){
-        String query = "Select * FROM " + USERS + " WHERE " + LOGIN_NAME + " = " + loginName;
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-        User users = new User();
-        if (cursor.moveToFirst()) {
-            cursor.moveToFirst();
-            users.setUserID(Integer.parseInt(cursor.getString(0)));
-            users.setUserName(cursor.getString(1));
-            //users.setUserIcon(DBUtil.getImage(cursor.getBlob(2)));
-            cursor.close();
-        } else {
+        try {
+            String query = "Select * FROM " + USERS + " WHERE " + LOGIN_NAME + " = " + loginName;
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery(query, null);
+            User users = new User();
+            if (cursor.moveToFirst()) {
+                cursor.moveToFirst();
+                users.setUserID(Integer.parseInt(cursor.getString(0)));
+                users.setUserName(cursor.getString(1));
+                //users.setUserIcon(DBUtil.getImage(cursor.getBlob(2)));
+                cursor.close();
+            } else {
+                users = null;
+            }
+            db.close();
+            return users;
+        }catch (SQLiteException ex){
+            User users = new User();
             users = null;
+            return users;
         }
-        db.close();
-        return users;
+
     }
 
     public boolean deleteUser(int ID) {

@@ -6,19 +6,19 @@ import androidx.lifecycle.ViewModel;
 
 public class LoginViewModel extends ViewModel {
 
-    private MutableLiveData<String> mLogin;
-    private MutableLiveData<String> mPassword;
-    public void setmLogin(String login){
-        mLogin.setValue(login);
+    private String login;
+    private String password;
+    public void setLogin(String loginName){
+        login = loginName;
     }
-    public LiveData<String> getmLogin() {
-        return mLogin;
+    public String getLogin() {
+        return login;
     }
 
-    public void setmPassword(String password) {
-        mPassword.setValue(password);
+    public void setPassword(String pw) {
+        password = pw;
     }
-    public MutableLiveData<String> getmPassword() {
-        return mPassword;
+    public String getPassword() {
+        return password;
     }
 }

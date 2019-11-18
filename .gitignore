@@ -24,3 +24,5 @@ app/.idea/workspace.xml
 app/.idea/workspace.xml
 app/.idea/gradle.xml
 *.ser
+app/.idea/caches/build_file_checksums.ser
+app/.idea/caches/gradle_models.ser
