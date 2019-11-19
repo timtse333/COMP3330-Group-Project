@@ -24,7 +24,7 @@ public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
     @NonNull
     @Override
     public projectHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row,null);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row,viewGroup,false);
 
         return new projectHolder(view);
     }

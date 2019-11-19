@@ -12,17 +12,17 @@
         <activity android:name=".projectCreation">
         </activity>
          <activity android:name=".projectList">
-             <intent-filter>
-                 <action android:name="android.intent.action.MAIN" />
-
-                 <category android:name="android.intent.category.LAUNCHER" />
-             </intent-filter>
          </activity>
         <activity android:name=".Account.Login" />
         <activity android:name=".Account.Registration" />
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".SplashScreen"
