@@ -6,4 +6,6 @@
     <color name="colorBackground">#413E4F</color>
     <color name="colorText">#FFFFFF</color>
     <color name="colorTextHint">#51d8c7</color>
+    <color name="tabtextcolor">#FFF</color>
+    <color name="tabindicatorcolor">#2d2d2d</color>
 </resources>

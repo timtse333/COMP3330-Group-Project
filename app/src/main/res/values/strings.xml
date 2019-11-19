@@ -13,6 +13,7 @@
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
+    <string name="menu_projectTest">ProjectTest</string>
 
     <!--Login attributes -->
     <string name="text_accounts">All Accounts</string>
@@ -34,4 +35,7 @@
     <string name="error_valid_email_password">Wrong Email or Password</string>
     <string name="text_hello">Hello,</string>
     <string name="text_title">Android Tutorials Hub</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
