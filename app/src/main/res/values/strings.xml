@@ -11,8 +11,8 @@
     <string name="menu_myprojects">myProjcets</string>
     <string name="menu_message">Messages</string>
     <string name="menu_tools">Tools</string>
-    <string name="menu_share">Share</string>
-    <string name="menu_send">Send</string>
+    <string name="menu_login">Login</string>
+    <string name="menu_registration">Register</string>
     <string name="menu_projectTest">ProjectTest</string>
 
     <!--Login attributes -->
@@ -24,7 +24,7 @@
     <string name="text_login">Login</string>
     <string name="text_register">Register</string>
     <string name="error_message_name">Enter Full Name</string>
-    <string name="error_message_email">Enter Valid Email</string>
+    <string name="error_message_login">Enter Valid Login Name</string>
     <string name="error_message_age">Enter Age</string>
     <string name="error_message_password">Enter Password</string>
     <string name="success_message">Registration Successful</string>
@@ -32,7 +32,7 @@
     <string name="text_already_member">Already a member? Login</string>
     <string name="error_login_exists">Login Name Already Exists</string>
     <string name="error_password_match">Password Does Not Matches</string>
-    <string name="error_valid_email_password">Wrong Email or Password</string>
+    <string name="error_valid_login_password">Wrong Login Name or Password</string>
     <string name="text_hello">Hello,</string>
     <string name="text_title">Android Tutorials Hub</string>
 
