@@ -31,14 +31,14 @@
 
     <fragment
         android:id="@+id/nav_share"
-        android:name="tim.hku.comp3330.ui.share.ShareFragment"
-        android:label="@string/menu_share"
+        android:name="tim.hku.comp3330.ui.login.LoginFragment"
+        android:label="@string/menu_login"
         tools:layout="@layout/fragment_share" />
 
     <fragment
         android:id="@+id/nav_send"
         android:name="tim.hku.comp3330.ui.send.SendFragment"
-        android:label="@string/menu_send"
+        android:label="@string/menu_registration"
         tools:layout="@layout/fragment_send" />
 
     <fragment

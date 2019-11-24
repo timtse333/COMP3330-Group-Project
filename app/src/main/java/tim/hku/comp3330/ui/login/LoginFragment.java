@@ -77,7 +77,7 @@ public class LoginFragment extends Fragment{
                     if (!inputValidation.isInputEditTextFilled(loginEditText, textInputLayoutLogin, getString(R.string.error_message_login))) {
                         return;
                     }
-                    if (!inputValidation.isInputEditTextFilled(pwEditText, textInputLayoutPassword, getString(R.string.error_message_login))) {
+                    if (!inputValidation.isInputEditTextFilled(pwEditText, textInputLayoutLogin, getString(R.string.error_message_password))) {
                         return;
                     }
                     if (database.GetUserByLoginName(loginEditText.getText().toString().trim()) != null) {
