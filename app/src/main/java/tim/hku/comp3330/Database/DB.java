@@ -131,7 +131,7 @@ public class DB extends SQLiteOpenHelper {
     }
     public User GetUserByLoginName(String loginName){
         try {
-            String query = "Select * FROM " + USERS + " WHERE " + LOGIN_NAME + " = " + loginName;
+            String query = "Select * FROM " + USERS + " WHERE " + LOGIN_NAME + " = '" + loginName + "'";
             SQLiteDatabase db = this.getWritableDatabase();
             Cursor cursor = db.rawQuery(query, null);
             User users = new User();
