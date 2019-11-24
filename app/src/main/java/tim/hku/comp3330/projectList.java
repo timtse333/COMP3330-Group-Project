@@ -40,13 +40,6 @@ public class projectList extends AppCompatActivity {
             models.add(database.GetProject(i));
         }
 
-//        Project project1 = database.GetProject(0);
-//        Project project2 = database.GetProject(1);
-//        Project project3 = database.GetProject(2);
-//        models.add(project1);
-//        models.add(project2);
-//        models.add(project3);
-
         return models;
 
     }
