@@ -61,9 +61,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         if (!inputValidation.isInputEditTextFilled(textInputEditTextLogin, textInputLayoutEmail, getString(R.string.error_message_login))) {
             return;
         }
-        if (!inputValidation.isInputEditTextEmail(textInputEditTextLogin, textInputLayoutEmail, getString(R.string.error_message_login))) {
-            return;
-        }
         if (!inputValidation.isInputEditTextFilled(textInputEditTextPassword, textInputLayoutPassword, getString(R.string.error_message_login))) {
             return;
         }

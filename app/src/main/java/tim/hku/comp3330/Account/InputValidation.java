@@ -50,6 +50,7 @@ public class InputValidation {
      * @param message
      * @return
      */
+    /*
     public boolean isInputEditTextEmail(TextInputEditText textInputEditText, TextInputLayout textInputLayout, String message) {
         String value = textInputEditText.getText().toString().trim();
         if (value.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(value).matches()) {
@@ -60,7 +61,7 @@ public class InputValidation {
             textInputLayout.setErrorEnabled(false);
         }
         return true;
-    }
+    }*/
 
     public boolean isInputEditTextMatches(TextInputEditText textInputEditText1, TextInputEditText textInputEditText2, TextInputLayout textInputLayout, String message) {
         String value1 = textInputEditText1.getText().toString().trim();
