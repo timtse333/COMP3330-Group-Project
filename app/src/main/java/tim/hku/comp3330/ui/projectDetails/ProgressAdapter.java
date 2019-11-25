@@ -16,9 +16,9 @@ import tim.hku.comp3330.R;
 
 public class ProgressAdapter extends RecyclerView.Adapter<ProgressHolder> {
     Context c;
-    ArrayList<ProgressPost> model;
+    List<ProgressPost> model;
 
-    public ProgressAdapter(Context c, ArrayList<ProgressPost> model) {
+    public ProgressAdapter(Context c, List<ProgressPost> model) {
         this.c = c;
         this.model = model;
     }
