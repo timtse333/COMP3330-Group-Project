@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
@@ -13,7 +14,10 @@ import android.view.ViewGroup;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.textview.MaterialTextView;
 
+import tim.hku.comp3330.DataClass.Project;
+import tim.hku.comp3330.Database.DB;
 import tim.hku.comp3330.R;
 
 
@@ -24,10 +28,13 @@ public class projectDetail extends Fragment {
     private AppBarLayout appBarLayout;
     private ViewPager viewPager;
     View view;
-
+    MaterialTextView name;
+    MaterialTextView description;
+    AppCompatImageView background;
+    DB database;
 
     public projectDetail() {
-        // Required empty public constructor
+        // Required empty public constructoru
     }
 
 
@@ -43,6 +50,15 @@ public class projectDetail extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view =  inflater.inflate(R.layout.fragment_project_detail, container, false);
+        database = new DB(getActivity());
+        Project project = database.GetProject(1);
+        int image = view.getResources().getIdentifier(project.getProjectPic(),"drawable","tim.hku.comp3330");
+        background = (AppCompatImageView) view.findViewById(R.id.project_image);
+        background.setImageResource(image);
+        name = (MaterialTextView) view.findViewById(R.id.project_name);
+        name.setText(project.getProjectName());
+        description = (MaterialTextView) view.findViewById(R.id.project_description);
+        description.setText(project.getProjectDescription());
         tabLayout = (TabLayout) view.findViewById(R.id.tablayout_id);
         appBarLayout = (AppBarLayout) view.findViewById(R.id.appbarid);
         viewPager = (ViewPager) view.findViewById(R.id.viewpager_id);
