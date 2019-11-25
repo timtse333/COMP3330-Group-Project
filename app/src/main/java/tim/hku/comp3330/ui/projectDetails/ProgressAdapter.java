@@ -18,7 +18,7 @@ public class ProgressAdapter extends RecyclerView.Adapter<ProgressHolder> {
     Context c;
     List<ProgressPost> model;
 
-    public ProgressAdapter(Context c, List<ProgressPost> model) {
+    public ProgressAdapter(Context c, ArrayList<ProgressPost> model) {
         this.c = c;
         this.model = model;
     }

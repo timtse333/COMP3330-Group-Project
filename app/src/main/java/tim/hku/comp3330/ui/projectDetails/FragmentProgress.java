@@ -1,5 +1,6 @@
 package tim.hku.comp3330.ui.projectDetails;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,10 @@ public class FragmentProgress extends Fragment {
     ProgressAdapter myAdapter;
     DB database;
 
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        database = new DB(context);
+    }
     public FragmentProgress() {
 
     }
@@ -51,7 +56,7 @@ public class FragmentProgress extends Fragment {
         return rootView;
     }
 
-    /*
+
     private ArrayList<ProgressPost> getMyList() {
         ArrayList<ProgressPost> models = new ArrayList<>();
 
@@ -91,5 +96,5 @@ public class FragmentProgress extends Fragment {
 
         return models;
 
-    }*/
+    }
 }

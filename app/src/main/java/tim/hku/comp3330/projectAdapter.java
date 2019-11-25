@@ -1,16 +1,24 @@
 package tim.hku.comp3330;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
 import tim.hku.comp3330.DataClass.Project;
+import tim.hku.comp3330.ui.home.HomeFragment;
+import tim.hku.comp3330.ui.login.LoginFragment;
+import tim.hku.comp3330.ui.projectDetails.projectDetail;
 
 public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
     Context c;
@@ -35,6 +43,14 @@ public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
         myHolder.mDes.setText(model.get(i).getProjectDescription());
         int img = myHolder.itemView.getContext().getResources().getIdentifier(model.get(i).getProjectPic(),"drawable","tim.hku.comp3330");
         myHolder.mImageView.setImageResource(img);
+
+        myHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(v).navigate(R.id.nav_project_test);
+            }
+        });
+
     }
 
     @Override

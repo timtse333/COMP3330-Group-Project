@@ -45,7 +45,7 @@ public class DB extends SQLiteOpenHelper {
     // Table Create statements
     String CREATE_USER_TABLE = String.format("CREATE TABLE %s(%s INTEGER PRIMARY KEY AUTOINCREMENT,%s TEXT,%s BLOB,%s TEXT,%s TEXT)", USERS, USER_ID, USER_NAME, USER_ICON, LOGIN_NAME, PASSWORD);
     String CREATE_PROJECT_TABLE = String.format("CREATE TABLE %s(%s INTEGER PRIMARY KEY AUTOINCREMENT,%s TEXT,%s TEXT,%s TEXT,%s INTEGER, FOREIGN KEY (%s) REFERENCES %s(%s))", PROJECT, PROJECT_ID, PROJECT_NAME, PROJECT_DESCRIPTION,PROJECT_PIC,OWNER_ID, OWNER_ID, USERS, USER_ID);
-    String CREATE_PROGRESS_TABLE = String.format("CREATE TABLE %s(%s AS INTEGER PRIMARY KEY AUTOINCREMENT,%s INTEGER,%s INTEGER,%s TEXT,%s TEXT,%s TEXT)", PROGRESS, POST_ID, PROJECT_ID, OWNER_ID, POST_TITLE, POST_CONTENT, CREATED_TIME);
+    String CREATE_PROGRESS_TABLE = String.format("CREATE TABLE %s(%s INTEGER PRIMARY KEY AUTOINCREMENT,%s INTEGER,%s INTEGER,%s TEXT,%s TEXT,%s TEXT)", PROGRESS, POST_ID, PROJECT_ID, OWNER_ID, POST_TITLE, POST_CONTENT, CREATED_TIME);
 
     public DB(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -313,8 +313,8 @@ public class DB extends SQLiteOpenHelper {
         db.insert(PROGRESS, null, values);
         db.close();
     }
-    public List<ProgressPost> GetPostsByProjectID(int projID){
-        List<ProgressPost> postList = new ArrayList<ProgressPost>();
+    public ArrayList<ProgressPost> GetPostsByProjectID(int projID){
+        ArrayList<ProgressPost> postList = new ArrayList<ProgressPost>();
         try {
             String query = "Select * FROM " + PROGRESS + " WHERE " + PROJECT_ID + " = " + projID;
             SQLiteDatabase db = this.getWritableDatabase();

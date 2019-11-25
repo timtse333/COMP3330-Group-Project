@@ -40,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gotoReg = new Intent(view.getContext(), Registration.class);
-                startActivity(gotoReg);
+                Intent createProj = new Intent(view.getContext(), projectCreation.class);
+                startActivity(createProj);
             }
         });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
