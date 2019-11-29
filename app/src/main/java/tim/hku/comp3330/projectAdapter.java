@@ -43,11 +43,13 @@ public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
         myHolder.mDes.setText(model.get(i).getProjectDescription());
         int img = myHolder.itemView.getContext().getResources().getIdentifier(model.get(i).getProjectPic(),"drawable","tim.hku.comp3330");
         myHolder.mImageView.setImageResource(img);
-
+        int projID = model.get(i).getProjectID();
         myHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigation.findNavController(v).navigate(R.id.nav_project_test);
+                Bundle bundle = new Bundle();
+                bundle.putInt("projID", projID);
+                Navigation.findNavController(v).navigate(R.id.nav_project_test,bundle);
             }
         });
 

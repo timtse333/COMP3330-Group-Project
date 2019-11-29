@@ -51,7 +51,7 @@ public class projectDetail extends Fragment {
         // Inflate the layout for this fragment
         view =  inflater.inflate(R.layout.fragment_project_detail, container, false);
         database = new DB(getActivity());
-        Project project = database.GetProject(1);
+        Project project = database.GetProject(getArguments().getInt("projID"));
         int image = view.getResources().getIdentifier(project.getProjectPic(),"drawable","tim.hku.comp3330");
         background = (AppCompatImageView) view.findViewById(R.id.project_image);
         background.setImageResource(image);
