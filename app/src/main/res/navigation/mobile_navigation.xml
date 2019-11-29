@@ -3,8 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_project_test">
+    app:startDestination="@+id/nav_home">
 
+    <fragment
+        android:id="@+id/nav_logout"
+        android:name="tim.hku.comp3330.ui.login.LoginFragment"
+        android:label="Logout"
+        tools:layout="@layout/activity_login" />
     <fragment
         android:id="@+id/nav_home"
         android:name="tim.hku.comp3330.ui.home.HomeFragment"

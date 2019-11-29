@@ -1,16 +1,20 @@
 package tim.hku.comp3330;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
@@ -22,6 +26,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
+import android.widget.Toast;
 
 import tim.hku.comp3330.Account.Login;
 import tim.hku.comp3330.Account.Registration;
@@ -29,48 +34,79 @@ import tim.hku.comp3330.Account.Registration;
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-
+    private AppBarConfiguration mAppBarConfigurationBeforeLogin;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        Boolean logined = prefs.getBoolean("IsLogin",false);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent createProj = new Intent(view.getContext(), projectCreation.class);
-                startActivity(createProj);
-            }
-        });
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        setSupportActionBar(toolbar);DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
-        /*navigationView.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                switch(v.getId()){
-                    case R.id.loginButton:
-                        Intent gotoLogin = new Intent(v.getContext(), tim.hku.comp3330.Account.Login.class);
-                        startActivity(gotoLogin);
-                        break;
-                    case R.id.regButton:
-                        Intent gotoReg = new Intent(v.getContext(), tim.hku.comp3330.Account.Registration.class);
-                        startActivity(gotoReg);
-                        break;
-                }
-            }
-        });*/
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_myprojects, R.id.nav_message,
-                R.id.nav_tools, R.id.nav_login, R.id.nav_registration,R.id.nav_project_test)
+                R.id.nav_tools, R.id.nav_login, R.id.nav_registration,R.id.nav_project_test,R.id.nav_logout)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+        if(logined){
+            MenuItem accountMenu = navigationView.getMenu().findItem(R.id.AccountMenu);
+            accountMenu.getSubMenu().findItem(R.id.nav_login).setVisible(false);
+            accountMenu.getSubMenu().findItem(R.id.nav_login).setEnabled(false);
+            accountMenu.getSubMenu().findItem(R.id.nav_registration).setVisible(false);
+            accountMenu.getSubMenu().findItem(R.id.nav_registration).setEnabled(false);
+            accountMenu.getSubMenu().findItem(R.id.nav_logout).setVisible(true);
+            accountMenu.getSubMenu().findItem(R.id.nav_logout).setEnabled(true);
+            accountMenu.getSubMenu().findItem(R.id.nav_logout).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putBoolean("IsLogin",false);
+                    editor.apply();
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
+            });
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent createProj = new Intent(view.getContext(), projectCreation.class);
+                    startActivity(createProj);
+                }
+            });
+        }
+        else{
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+            drawer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    NavController nav = Navigation.findNavController(v);
+                    nav.navigate(R.id.nav_login );
+                }
+            });
+            MenuItem functionMenu = navigationView.getMenu().findItem(R.id.FunctionsMenu);
+            functionMenu.setVisible(false);
+            functionMenu.setEnabled(false);
+            MenuItem accountMenu = navigationView.getMenu().findItem(R.id.AccountMenu);
+            accountMenu.getSubMenu().findItem(R.id.nav_logout).setVisible(false);
+            accountMenu.getSubMenu().findItem(R.id.nav_logout).setEnabled(false);
+            navController.navigate(R.id.nav_login);
+        }
+
+
+
     }
 
     @Override

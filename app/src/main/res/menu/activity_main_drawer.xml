@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <item android:title="Account">
+    <item
+        android:id="@+id/AccountMenu"
+        android:title="Account">
         <menu>
             <item
                 android:id="@+id/nav_login"
@@ -13,30 +15,37 @@
                 android:id="@+id/nav_registration"
                 android:icon="@drawable/ic_menu_send"
                 android:title="@string/menu_registration" />
+            <item
+                android:id="@+id/nav_logout"
+                android:title="Logout" />
         </menu>
     </item>
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="@string/menu_home" />
-        <item
-            android:id="@+id/nav_myprojects"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="myProjcets" />
-        <item
-            android:id="@+id/nav_message"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Messages" />
-        <item
-            android:id="@+id/nav_tools"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="@string/menu_tools" />
-        <item
-            android:id="@+id/project_test"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="@string/menu_projectTest" />
-    </group>
+    <item
+        android:id="@+id/FunctionsMenu"
+        android:title="Functions">
+        <menu>
+            <item
+                android:id="@+id/nav_home"
+                android:icon="@drawable/ic_menu_camera"
+                android:title="@string/menu_home" />
+            <item
+                android:id="@+id/nav_myprojects"
+                android:icon="@drawable/ic_menu_gallery"
+                android:title="myProjcets" />
+            <item
+                android:id="@+id/nav_message"
+                android:icon="@drawable/ic_menu_slideshow"
+                android:title="Messages" />
+            <item
+                android:id="@+id/nav_tools"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="@string/menu_tools" />
+            <item
+                android:id="@+id/project_test"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="@string/menu_projectTest" />
+        </menu>
+    </item>
 
 
 </menu>
