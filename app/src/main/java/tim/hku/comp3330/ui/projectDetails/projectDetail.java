@@ -51,7 +51,7 @@ public class projectDetail extends Fragment {
         // Inflate the layout for this fragment
         view =  inflater.inflate(R.layout.fragment_project_detail, container, false);
         database = new DB(getActivity());
-        Project project = database.GetProject(1);
+        Project project = database.GetProject(getArguments().getInt("projID"));
         int image = view.getResources().getIdentifier(project.getProjectPic(),"drawable","tim.hku.comp3330");
         background = (AppCompatImageView) view.findViewById(R.id.project_image);
         background.setImageResource(image);
@@ -63,7 +63,14 @@ public class projectDetail extends Fragment {
         appBarLayout = (AppBarLayout) view.findViewById(R.id.appbarid);
         viewPager = (ViewPager) view.findViewById(R.id.viewpager_id);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
-        adapter.addFragment(new FragmentProgress(),"Progress");
+
+        //Pass ProjID to fragments
+        FragmentProgress fragProgress = new FragmentProgress();
+        Bundle bundle=new Bundle();
+        bundle.putInt("projID",project.getProjectID());
+        fragProgress.setArguments(bundle);
+
+        adapter.addFragment(fragProgress,"Progress");
         adapter.addFragment(new FragmentBlog(),"Blog");
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);

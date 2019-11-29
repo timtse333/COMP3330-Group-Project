@@ -10,6 +10,7 @@ import android.database.Cursor;
 import java.util.ArrayList;
 import java.util.List;
 
+import tim.hku.comp3330.DataClass.ProgressPost;
 import tim.hku.comp3330.DataClass.User;
 import tim.hku.comp3330.DataClass.Project;
 
@@ -33,10 +34,18 @@ public class DB extends SQLiteOpenHelper {
     public static final String PROJECT_PIC = "Project_Pic";
     public static final String PROJECT_DESCRIPTION = "Project_Description";
     public static final String OWNER_ID = "Owner_ID";
+
+    //Table: Project Progress Post
+    public static final String PROGRESS = "Progress_Post";
+    public static final String POST_ID = "Post_ID";
+    public static final String POST_TITLE = "Title";
+    public static final String POST_CONTENT = "Content";
+    public static final String CREATED_TIME = "Created_Time";
+
     // Table Create statements
     String CREATE_USER_TABLE = String.format("CREATE TABLE %s(%s INTEGER PRIMARY KEY AUTOINCREMENT,%s TEXT,%s BLOB,%s TEXT,%s TEXT)", USERS, USER_ID, USER_NAME, USER_ICON, LOGIN_NAME, PASSWORD);
     String CREATE_PROJECT_TABLE = String.format("CREATE TABLE %s(%s INTEGER PRIMARY KEY AUTOINCREMENT,%s TEXT,%s TEXT,%s TEXT,%s INTEGER, FOREIGN KEY (%s) REFERENCES %s(%s))", PROJECT, PROJECT_ID, PROJECT_NAME, PROJECT_DESCRIPTION,PROJECT_PIC,OWNER_ID, OWNER_ID, USERS, USER_ID);
-
+    String CREATE_PROGRESS_TABLE = String.format("CREATE TABLE %s(%s INTEGER PRIMARY KEY AUTOINCREMENT,%s INTEGER,%s INTEGER,%s TEXT,%s TEXT,%s TEXT)", PROGRESS, POST_ID, PROJECT_ID, OWNER_ID, POST_TITLE, POST_CONTENT, CREATED_TIME);
 
     public DB(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -46,6 +55,7 @@ public class DB extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_USER_TABLE);
         db.execSQL(CREATE_PROJECT_TABLE);
+        db.execSQL(CREATE_PROGRESS_TABLE);
     }
 
 
@@ -242,6 +252,7 @@ public class DB extends SQLiteOpenHelper {
                 project.setProjectDescription(cursor.getString(2));
                 project.setProjectPic(cursor.getString(3));
                 project.setOwnerID(Integer.parseInt(cursor.getString(4)));
+                projList.add(project);
             }while(cursor.moveToNext());
         }
         cursor.close();
@@ -292,4 +303,39 @@ public class DB extends SQLiteOpenHelper {
         db.update(PROJECT, values, PROJECT_ID + " = " + project.getProjectID(), null);
     }
 
+    public void CreateNewPost(ProgressPost post){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(POST_TITLE, post.getTitle());
+        values.put(POST_CONTENT, post.getContent());
+        values.put(OWNER_ID, post.getOwnerID());
+        values.put(CREATED_TIME, post.getCreated());
+        db.insert(PROGRESS, null, values);
+        db.close();
+    }
+    public ArrayList<ProgressPost> GetPostsByProjectID(int projID){
+        ArrayList<ProgressPost> postList = new ArrayList<ProgressPost>();
+        try {
+            String query = "Select * FROM " + PROGRESS + " WHERE " + PROJECT_ID + " = " + projID;
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery(query, null);
+            if (cursor.moveToFirst()) {
+                do{
+                    ProgressPost post = new ProgressPost();
+                    post.setProgressPostID(Integer.parseInt(cursor.getString(0)));
+                    post.setProjectId(Integer.parseInt(cursor.getString(1)));
+                    post.setOwnerID(Integer.parseInt(cursor.getString(2)));
+                    post.setTitle(cursor.getString(3));
+                    post.setContent(cursor.getString(4));
+                    post.setCreated(cursor.getString(5));
+                    postList.add(post);
+                }while(cursor.moveToNext());
+            }
+            cursor.close();
+            db.close();
+            return postList;
+        }catch (SQLiteException ex){
+            return postList;
+        }
+    }
 }

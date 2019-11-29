@@ -1,5 +1,6 @@
 package tim.hku.comp3330.ui.projectDetails;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,10 @@ public class FragmentProgress extends Fragment {
     ProgressAdapter myAdapter;
     DB database;
 
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        database = new DB(context);
+    }
     public FragmentProgress() {
 
     }
@@ -38,17 +43,19 @@ public class FragmentProgress extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //database = new DB(getActivity());
+        Bundle bundle = getArguments();
         View rootView = inflater.inflate(R.layout.progress_fragment, container, false);
         myRecycleriew = (RecyclerView) rootView.findViewById(R.id.recyclerView);
 
         myRecycleriew.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        myAdapter = new ProgressAdapter(getActivity(),getMyList());
+        myAdapter = new ProgressAdapter(getActivity(),database.GetPostsByProjectID(bundle.getInt("projID")));
         myRecycleriew.setAdapter(myAdapter);
 
 
         return rootView;
     }
+
 
     private ArrayList<ProgressPost> getMyList() {
         ArrayList<ProgressPost> models = new ArrayList<>();
@@ -56,6 +63,7 @@ public class FragmentProgress extends Fragment {
 
 
         // Testing Data:
+
         ProgressPost o = new ProgressPost();
         o.setProgressPostID(1);
         o.setOwnerID(1);
