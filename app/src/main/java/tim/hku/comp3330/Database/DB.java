@@ -306,6 +306,7 @@ public class DB extends SQLiteOpenHelper {
     public void CreateNewPost(ProgressPost post){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(PROJECT_ID,post.getProjectId());
         values.put(POST_TITLE, post.getTitle());
         values.put(POST_CONTENT, post.getContent());
         values.put(OWNER_ID, post.getOwnerID());

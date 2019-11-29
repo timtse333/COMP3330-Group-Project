@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_project_test">
+    app:startDestination="@+id/nav_home">
 
     <fragment
         android:id="@+id/nav_home"
@@ -46,5 +46,11 @@
         android:name="tim.hku.comp3330.ui.projectDetails.projectDetail"
         android:label="@string/menu_projectTest"
         tools:layout="@layout/fragment_project_detail" />
+
+    <fragment
+        android:id="@+id/nav_post_progress"
+        android:name="tim.hku.comp3330.ui.post.PostProgressFragment"
+        android:label="post_progress"
+        tools:layout="@layout/fragment_post_progress" />
 
 </navigation>
