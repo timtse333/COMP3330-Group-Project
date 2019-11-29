@@ -239,11 +239,11 @@ public class DB extends SQLiteOpenHelper {
         db.close();
         return project;
     }
-    public List<Project> GetProjectByUserID(int userID){
+    public ArrayList<Project> GetProjectByUserID(int userID){
         String query = "Select * FROM " + PROJECT + " WHERE " + OWNER_ID + " = " + userID;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
-        List<Project> projList = new ArrayList<Project>();
+        ArrayList<Project> projList = new ArrayList<Project>();
         if (cursor.moveToFirst()) {
             do{
                 Project project = new Project();

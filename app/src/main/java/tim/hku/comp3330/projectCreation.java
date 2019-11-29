@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -53,11 +55,12 @@ public class projectCreation extends AppCompatActivity {
     }
 
     private void postDataToSQLite() {
-
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        int userID = prefs.getInt("userID",1);
         project.setProjectName(projectName.getText().toString().trim());
         project.setProjectDescription(projectDescription.getText().toString().trim());
         project.setProjectPic("project_test"); // Default image for project
-        project.setOwnerID(1);
+        project.setOwnerID(userID);
         database.CreateProject(project);
 
     }
