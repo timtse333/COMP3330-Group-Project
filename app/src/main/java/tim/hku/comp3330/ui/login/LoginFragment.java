@@ -2,13 +2,16 @@ package tim.hku.comp3330.ui.login;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ShareActionProvider;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -32,7 +35,9 @@ import java.util.List;
 
 import tim.hku.comp3330.Account.InputValidation;
 import tim.hku.comp3330.DataClass.Project;
+import tim.hku.comp3330.DataClass.User;
 import tim.hku.comp3330.Database.DB;
+import tim.hku.comp3330.MainActivity;
 import tim.hku.comp3330.R;
 import tim.hku.comp3330.projectList;
 import tim.hku.comp3330.ui.home.HomeFragment;
@@ -74,18 +79,27 @@ public class LoginFragment extends Fragment{
         AppCompatTextView registerLink = view.findViewById(R.id.textViewLinkRegister);
             class Util{
                 private void verifyFromSQLite() {
+                    User user = new User();
+                    user = database.GetUserByLoginName(loginEditText.getText().toString().trim());
                     if (!inputValidation.isInputEditTextFilled(loginEditText, textInputLayoutLogin, getString(R.string.error_message_login))) {
                         return;
                     }
                     if (!inputValidation.isInputEditTextFilled(pwEditText, textInputLayoutLogin, getString(R.string.error_message_password))) {
                         return;
                     }
-                    if (database.GetUserByLoginName(loginEditText.getText().toString().trim()) != null) {
+                    if (user != null) {
                         // TODO: start activity and load homepage for the user
                         List<Project> projList = database.GetProjectByUserID(database.GetUserByLoginName(loginEditText.getText().toString().trim()).getUserID());
                         emptyInputEditText();
-                        NavController nav = NavHostFragment.findNavController(LoginFragment.this);
-                        nav.navigate(R.id.nav_myprojects );
+                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putBoolean("IsLogin",true);
+                        editor.putInt("userID",user.getUserID());
+                        editor.apply();
+                        /*NavController nav = NavHostFragment.findNavController(LoginFragment.this);
+                        nav.navigate(R.id.nav_myprojects );*/
+                        Intent intent = new Intent(view.getContext(), MainActivity.class);
+                        startActivity(intent);
                     } else {
                         // Snack Bar to show success message that record is wrong
                         Snackbar.make(nestedScrollView, getString(R.string.error_valid_login_password), Snackbar.LENGTH_LONG).show();
