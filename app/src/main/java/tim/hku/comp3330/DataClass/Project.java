@@ -58,4 +58,9 @@ public class Project {
     public void setOwnerID(int ownerID) {
         this.ownerID = ownerID;
     }
+
+    public String toString() {
+        return projectName;
+    }
+
 }

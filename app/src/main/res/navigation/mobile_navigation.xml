@@ -52,4 +52,10 @@
         android:label="@string/menu_projectTest"
         tools:layout="@layout/fragment_project_detail" />
 
+    <fragment
+        android:id="@+id/nav_post_progress"
+        android:name="tim.hku.comp3330.ui.post.PostProgressFragment"
+        android:label="post_progress"
+        tools:layout="@layout/fragment_post_progress" />
+
 </navigation>
