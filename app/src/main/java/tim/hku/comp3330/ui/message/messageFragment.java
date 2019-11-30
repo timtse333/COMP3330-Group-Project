@@ -11,25 +11,40 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.material.tabs.TabLayout;
+
+import tim.hku.comp3330.Database.DB;
 import tim.hku.comp3330.R;
+import tim.hku.comp3330.ui.projectDetails.ViewPagerAdapter;
 
 public class messageFragment extends Fragment {
 
-    private messageViewModel messageViewModel;
+    private TabLayout msgTab;
+    private ViewPager viewPager;
+    DB database;
+
+    public messageFragment(){};
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        messageViewModel =
-                ViewModelProviders.of(this).get(messageViewModel.class);
+
         View root = inflater.inflate(R.layout.fragment_message, container, false);
-        final TextView textView = root.findViewById(R.id.text_message);
-        messageViewModel.getText().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
+        database = new DB(getActivity());
+        msgTab = root.findViewById(R.id.msgTab);
+        viewPager = root.findViewById(R.id.msgViewPager);
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
+        adapter.addFragment(new requestFragment(),"Request");
+        adapter.addFragment(new responseFragment(), "Response");
+        adapter.addFragment(new pendingFragment(), "Pending Request");
+        viewPager.setAdapter(adapter);
+        msgTab.setupWithViewPager(viewPager);
         return root;
     }
 }

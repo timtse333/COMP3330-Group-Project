@@ -50,6 +50,14 @@
             >
         </TextView>
 
+        <Button
+            android:id="@+id/join"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/descriptionTv"
+            android:layout_toEndOf="@id/imageIv"
+            android:text="Join this Project" />
+
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

@@ -10,6 +10,7 @@ import android.database.Cursor;
 import java.util.ArrayList;
 import java.util.List;
 
+import tim.hku.comp3330.DataClass.Message;
 import tim.hku.comp3330.DataClass.ProgressPost;
 import tim.hku.comp3330.DataClass.User;
 import tim.hku.comp3330.DataClass.Project;
@@ -42,11 +43,23 @@ public class DB extends SQLiteOpenHelper {
     public static final String POST_CONTENT = "Content";
     public static final String CREATED_TIME = "Created_Time";
 
+    //Table: Message
+    public static final String MESSAGE = "Message";
+    public static final String MSG_ID = "Message_ID";
+    public static final String MSG_CONTENT = "Message_Content";
+    public static final String SENDER_ID = "Sender_ID";
+    public static final String RECEIVER_ID = "Receiver_ID";
+    public static final String IS_DELETED = "is_Deleted"; // Sqlite does not support boolean, use 0 for false and 1 for true
+
+    //Table: User-Project-Association
+    public static final String ASSOCIATION = "Association";
+    public static final String PARTICIPANT_ID = "Participant_ID";
     // Table Create statements
     String CREATE_USER_TABLE = String.format("CREATE TABLE %s(%s INTEGER PRIMARY KEY AUTOINCREMENT,%s TEXT,%s BLOB,%s TEXT,%s TEXT)", USERS, USER_ID, USER_NAME, USER_ICON, LOGIN_NAME, PASSWORD);
     String CREATE_PROJECT_TABLE = String.format("CREATE TABLE %s(%s INTEGER PRIMARY KEY AUTOINCREMENT,%s TEXT,%s TEXT,%s TEXT,%s INTEGER, FOREIGN KEY (%s) REFERENCES %s(%s))", PROJECT, PROJECT_ID, PROJECT_NAME, PROJECT_DESCRIPTION,PROJECT_PIC,OWNER_ID, OWNER_ID, USERS, USER_ID);
     String CREATE_PROGRESS_TABLE = String.format("CREATE TABLE %s(%s INTEGER PRIMARY KEY AUTOINCREMENT,%s INTEGER,%s INTEGER,%s TEXT,%s TEXT,%s TEXT)", PROGRESS, POST_ID, PROJECT_ID, OWNER_ID, POST_TITLE, POST_CONTENT, CREATED_TIME);
-
+    String CREATE_MESSSAGE_TABLE = String.format("CREATE TABLE %s(%s INTEGER PRIMARY KEY AUTOINCREMENT,%s TEXT,%s INTEGER,%s INTEGER,%s INTEGER,%s INTEGER DEFAULT 0)", MESSAGE, MSG_ID, MSG_CONTENT, SENDER_ID, RECEIVER_ID, PROJECT_ID ,IS_DELETED);
+    String CREATE_USER_PROJECT_ASSOCIATION_TABLE = String.format("CREATE TABLE %s(%sINTEGER,%s INTEGER)", ASSOCIATION, PROJECT_ID, PARTICIPANT_ID);
     public DB(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -56,6 +69,8 @@ public class DB extends SQLiteOpenHelper {
         db.execSQL(CREATE_USER_TABLE);
         db.execSQL(CREATE_PROJECT_TABLE);
         db.execSQL(CREATE_PROGRESS_TABLE);
+        db.execSQL(CREATE_MESSSAGE_TABLE);
+        db.execSQL(CREATE_USER_PROJECT_ASSOCIATION_TABLE);
     }
 
 
@@ -64,6 +79,9 @@ public class DB extends SQLiteOpenHelper {
         // on upgrade drop older tables
         db.execSQL("DROP TABLE IF EXISTS " + USERS);
         db.execSQL("DROP TABLE IF EXISTS " + PROJECT);
+        db.execSQL("DROP TABLE IF EXISTS " + PROGRESS);
+        db.execSQL("DROP TABLE IF EXISTS " + MESSAGE);
+        db.execSQL("DROP TABLE IF EXISTS " + ASSOCIATION);
         // create new tables
         onCreate(db);
     }
@@ -211,7 +229,6 @@ public class DB extends SQLiteOpenHelper {
     public void CreateProject(Project project) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-//        values.put(PROJECT_ID, project.getProjectID());
         values.put(PROJECT_NAME, project.getProjectName());
         values.put(PROJECT_DESCRIPTION, project.getProjectDescription());
         values.put(PROJECT_PIC, project.getProjectPic());
@@ -219,7 +236,6 @@ public class DB extends SQLiteOpenHelper {
         db.insert(PROJECT, null, values);
         db.close();
     }
-
     public Project GetProject(int projectID) {
         String query = "Select * FROM " + PROJECT + " WHERE " + PROJECT_ID + " = " + projectID;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -241,6 +257,7 @@ public class DB extends SQLiteOpenHelper {
     }
     public ArrayList<Project> GetProjectByUserID(int userID){
         String query = "Select * FROM " + PROJECT + " WHERE " + OWNER_ID + " = " + userID;
+        String query2 = "Select * FROM " + ASSOCIATION + " WHERE " + PARTICIPANT_ID + " = " + userID;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         ArrayList<Project> projList = new ArrayList<Project>();
@@ -283,7 +300,7 @@ public class DB extends SQLiteOpenHelper {
         Project project = new Project();
         if (cursor.moveToFirst()) {
             project.setProjectID(Integer.parseInt(cursor.getString(0)));
-            db.delete(USERS, USER_ID + " =? ", new String[]{
+            db.delete(PROJECT, PROJECT_ID + " =? ", new String[]{
                     String.valueOf(project.getProjectID())
             });
             cursor.close();
@@ -338,5 +355,154 @@ public class DB extends SQLiteOpenHelper {
         }catch (SQLiteException ex){
             return postList;
         }
+    }
+    public void CreateMessage(Message message){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(MSG_CONTENT, message.getMessageContent());
+        values.put(SENDER_ID, message.getSenderID());
+        values.put(RECEIVER_ID, message.getReceiverID());
+        values.put(PROJECT_ID, message.getProjID());
+        values.put(IS_DELETED, 0);
+        db.insert(MESSAGE, null, values);
+        db.close();
+    }
+    public void updateMesage(Message msg) {
+        // Only name and description should be able to update
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(MSG_CONTENT, msg.getMessageContent());
+        values.put(SENDER_ID, msg.getSenderID());
+        values.put(RECEIVER_ID, msg.getReceiverID());
+        db.update(MESSAGE, values, MSG_ID + " = " + msg.getMessageID(), null);
+    }
+    public void SoftDeleteMessages(Message msg){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(IS_DELETED, true);
+        db.update(MESSAGE, values, MSG_ID + " = " + msg.getMessageID(), null);
+    }
+    public ArrayList<Message> GetCancelledMessages(int userID){
+        ArrayList<Message> msgList = new ArrayList<Message>();
+        try {
+            String query = "Select * FROM " + MESSAGE + " WHERE " + SENDER_ID + " = " + userID + " AND " + IS_DELETED + " = " + 1;
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery(query, null);
+            if (cursor.moveToFirst()) {
+                do{
+                    Message msg = new Message();
+                    msg.setMessageID(Integer.parseInt(cursor.getString(0)));
+                    msg.setMessageContent(cursor.getString(1));
+                    msg.setSenderID(Integer.parseInt(cursor.getString(2)));
+                    msg.setReceiverID(Integer.parseInt(cursor.getString(3)));
+                    msg.setProjID(Integer.parseInt(cursor.getString(4)));
+                    msg.setDeleted(true); // only deleted message will be added to this list, can assume this to be true for all msgs
+                    msgList.add(msg);
+                }while(cursor.moveToNext());
+            }
+            cursor.close();
+            db.close();
+            return msgList;
+        }catch (SQLiteException ex){
+            return msgList;
+        }
+    }
+    public ArrayList<Message> GetAcceptedRejectedMessages(int userID){
+        ArrayList<Message> msgList = new ArrayList<Message>();
+        try {
+            String query = "Select * FROM " + MESSAGE + " WHERE " + RECEIVER_ID + " = " + userID + " AND " + IS_DELETED + " = " + 1;
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery(query, null);
+            if (cursor.moveToFirst()) {
+                do{
+                    Message msg = new Message();
+                    msg.setMessageID(Integer.parseInt(cursor.getString(0)));
+                    msg.setMessageContent(cursor.getString(1));
+                    msg.setSenderID(Integer.parseInt(cursor.getString(2)));
+                    msg.setReceiverID(Integer.parseInt(cursor.getString(3)));
+                    msg.setProjID(Integer.parseInt(cursor.getString(4)));
+                    msg.setDeleted(true); // only deleted message will be added to this list, can assume this to be true for all msgs
+                    msgList.add(msg);
+                }while(cursor.moveToNext());
+            }
+            cursor.close();
+            db.close();
+            return msgList;
+        }catch (SQLiteException ex){
+            return msgList;
+        }
+    }
+    // Get all messages sent by this user where the messages have not been accepted/rejected
+    public ArrayList<Message> GetAliveSendingMessages(int userID){
+        ArrayList<Message> msgList = new ArrayList<Message>();
+        try {
+            String query = "Select * FROM " + MESSAGE + " WHERE " + SENDER_ID + " = " + userID + " AND " + IS_DELETED + " = " + 0;
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery(query, null);
+            if (cursor.moveToFirst()) {
+                do{
+                    Message msg = new Message();
+                    msg.setMessageID(Integer.parseInt(cursor.getString(0)));
+                    msg.setMessageContent(cursor.getString(1));
+                    msg.setSenderID(Integer.parseInt(cursor.getString(2)));
+                    msg.setReceiverID(Integer.parseInt(cursor.getString(3)));
+                    msg.setProjID(Integer.parseInt(cursor.getString(4)));
+                    msg.setDeleted(false); // only un-deleted message will be added to this list, can assume this to be false for all msgs
+                    msgList.add(msg);
+                }while(cursor.moveToNext());
+            }
+            cursor.close();
+            db.close();
+            return msgList;
+        }catch (SQLiteException ex){
+            return msgList;
+        }
+    }
+
+    // Get all messages sent to this user where the messages have not been accepted/rejected
+    public ArrayList<Message> GetAliveIncomingMessages(int userID){
+        ArrayList<Message> msgList = new ArrayList<Message>();
+        try {
+            String query = "Select * FROM " + MESSAGE + " WHERE " + RECEIVER_ID + " = " + userID + " AND " + IS_DELETED + " = " + 0;
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery(query, null);
+            if (cursor.moveToFirst()) {
+                do{
+                    Message msg = new Message();
+                    msg.setMessageID(Integer.parseInt(cursor.getString(0)));
+                    msg.setMessageContent(cursor.getString(1));
+                    msg.setSenderID(Integer.parseInt(cursor.getString(2)));
+                    msg.setReceiverID(Integer.parseInt(cursor.getString(3)));
+                    msg.setProjID(Integer.parseInt(cursor.getString(4)));
+                    msg.setDeleted(false); // only un-deleted message will be added to this list, can assume this to be false for all msgs
+                    msgList.add(msg);
+                }while(cursor.moveToNext());
+            }
+            cursor.close();
+            db.close();
+            return msgList;
+        }catch (SQLiteException ex){
+            return msgList;
+        }
+    }
+    public Message GetMessageByID(int msgID){
+            String query = "Select * FROM " + MESSAGE + " WHERE " + MSG_ID + " = " + msgID;
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery(query, null);
+            Message msg = new Message();
+            if (cursor.moveToFirst()) {
+                msg.setMessageID(Integer.parseInt(cursor.getString(0)));
+                msg.setMessageContent(cursor.getString(1));
+                msg.setSenderID(Integer.parseInt(cursor.getString(2)));
+                msg.setReceiverID(Integer.parseInt(cursor.getString(3)));
+                msg.setProjID(Integer.parseInt(cursor.getString(4)));
+                msg.setDeleted(Integer.parseInt(cursor.getString(5)) == 0 ? false : true);
+                cursor.close();
+            }
+            else{
+                msg = null;
+            }
+            db.close();
+            return msg;
     }
 }

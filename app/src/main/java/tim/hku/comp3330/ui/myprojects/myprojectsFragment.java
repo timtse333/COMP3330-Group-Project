@@ -33,7 +33,7 @@ public class myprojectsFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_myproject, container, false);
         myRecycleriew =  root.findViewById(R.id.projectList);
         myRecycleriew.setLayoutManager(new LinearLayoutManager(getActivity()));
-        projAdapter = new myProjectsAdapter(getActivity(),getMyList());
+        projAdapter = new myProjectsAdapter(getActivity().getApplicationContext(),getMyList());
         myRecycleriew.setAdapter(projAdapter);
         return root;
     }
@@ -41,7 +41,6 @@ public class myprojectsFragment extends Fragment {
         ArrayList<Project> models = new ArrayList<>();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         int userID = prefs.getInt("userID",1);
-        int total = database.GetProjectNum();
         models = database.GetProjectByUserID(userID);
         return models;
 
