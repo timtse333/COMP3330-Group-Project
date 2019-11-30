@@ -41,6 +41,8 @@ public class messageFragment extends Fragment {
         viewPager = root.findViewById(R.id.msgViewPager);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
         adapter.addFragment(new requestFragment(),"Request");
+        adapter.addFragment(new responseFragment(), "Response");
+        adapter.addFragment(new pendingFragment(), "Pending Request");
         viewPager.setAdapter(adapter);
         msgTab.setupWithViewPager(viewPager);
         return root;

@@ -49,6 +49,9 @@ public class myProjectsAdapter extends RecyclerView.Adapter<myProjectsHolder> {
                 Navigation.findNavController(v).navigate(R.id.nav_project_test,bundle);
             }
         });
+        myHolder.join.setVisibility(View.GONE);
+        myHolder.join.setEnabled(false);
+
 
     }
 

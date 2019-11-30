@@ -367,14 +367,71 @@ public class DB extends SQLiteOpenHelper {
         db.insert(MESSAGE, null, values);
         db.close();
     }
-
+    public void updateMesage(Message msg) {
+        // Only name and description should be able to update
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(MSG_CONTENT, msg.getMessageContent());
+        values.put(SENDER_ID, msg.getSenderID());
+        values.put(RECEIVER_ID, msg.getReceiverID());
+        db.update(MESSAGE, values, MSG_ID + " = " + msg.getMessageID(), null);
+    }
     public void SoftDeleteMessages(Message msg){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(IS_DELETED, true);
         db.update(MESSAGE, values, MSG_ID + " = " + msg.getMessageID(), null);
     }
-
+    public ArrayList<Message> GetCancelledMessages(int userID){
+        ArrayList<Message> msgList = new ArrayList<Message>();
+        try {
+            String query = "Select * FROM " + MESSAGE + " WHERE " + SENDER_ID + " = " + userID + " AND " + IS_DELETED + " = " + 1;
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery(query, null);
+            if (cursor.moveToFirst()) {
+                do{
+                    Message msg = new Message();
+                    msg.setMessageID(Integer.parseInt(cursor.getString(0)));
+                    msg.setMessageContent(cursor.getString(1));
+                    msg.setSenderID(Integer.parseInt(cursor.getString(2)));
+                    msg.setReceiverID(Integer.parseInt(cursor.getString(3)));
+                    msg.setProjID(Integer.parseInt(cursor.getString(4)));
+                    msg.setDeleted(true); // only deleted message will be added to this list, can assume this to be true for all msgs
+                    msgList.add(msg);
+                }while(cursor.moveToNext());
+            }
+            cursor.close();
+            db.close();
+            return msgList;
+        }catch (SQLiteException ex){
+            return msgList;
+        }
+    }
+    public ArrayList<Message> GetAcceptedRejectedMessages(int userID){
+        ArrayList<Message> msgList = new ArrayList<Message>();
+        try {
+            String query = "Select * FROM " + MESSAGE + " WHERE " + RECEIVER_ID + " = " + userID + " AND " + IS_DELETED + " = " + 1;
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery(query, null);
+            if (cursor.moveToFirst()) {
+                do{
+                    Message msg = new Message();
+                    msg.setMessageID(Integer.parseInt(cursor.getString(0)));
+                    msg.setMessageContent(cursor.getString(1));
+                    msg.setSenderID(Integer.parseInt(cursor.getString(2)));
+                    msg.setReceiverID(Integer.parseInt(cursor.getString(3)));
+                    msg.setProjID(Integer.parseInt(cursor.getString(4)));
+                    msg.setDeleted(true); // only deleted message will be added to this list, can assume this to be true for all msgs
+                    msgList.add(msg);
+                }while(cursor.moveToNext());
+            }
+            cursor.close();
+            db.close();
+            return msgList;
+        }catch (SQLiteException ex){
+            return msgList;
+        }
+    }
     // Get all messages sent by this user where the messages have not been accepted/rejected
     public ArrayList<Message> GetAliveSendingMessages(int userID){
         ArrayList<Message> msgList = new ArrayList<Message>();

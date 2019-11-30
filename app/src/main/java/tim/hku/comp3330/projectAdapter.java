@@ -89,8 +89,8 @@ public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
         proj = database.GetProject(projID);
         user = database.GetUserByID(senderID);
         msg.setProjID(projID);
-        msg.setSenderID(receiverID);
-        msg.setReceiverID(senderID);
+        msg.setSenderID(senderID);
+        msg.setReceiverID(receiverID);
         msg.setMessageContent(user.getUserName() + " wants to join the project <" + proj.getProjectName() + ">");
         database.CreateMessage(msg);
     }
