@@ -27,7 +27,7 @@ public class projectList extends AppCompatActivity {
         myRecycleriew = findViewById(R.id.recyclerView);
         myRecycleriew.setLayoutManager(new LinearLayoutManager(this));
 
-        myAdapter= new projectAdapter(this,getMyList());
+        myAdapter= new projectAdapter(getApplicationContext(),getMyList());
         myRecycleriew.setAdapter(myAdapter);
     }
 

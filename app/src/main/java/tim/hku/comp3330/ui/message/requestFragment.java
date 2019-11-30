@@ -28,6 +28,7 @@ public class requestFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        database = new DB(getActivity());
         View rootView = inflater.inflate(R.layout.fragment_request, container, false);
         myRecycleriew = (RecyclerView) rootView.findViewById(R.id.requestRecyclerView);
 
@@ -43,7 +44,7 @@ public class requestFragment extends Fragment {
         ArrayList<Message> msgList = new ArrayList<Message>();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         int userID = prefs.getInt("userID",1);
-        //msgList = database.GetAliveIncomingMessages(userID);
+        msgList = database.GetAliveIncomingMessages(userID);
         return msgList;
     }
 }

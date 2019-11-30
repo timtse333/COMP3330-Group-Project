@@ -2,7 +2,9 @@ package tim.hku.comp3330;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import tim.hku.comp3330.DataClass.Message;
 import tim.hku.comp3330.DataClass.Project;
+import tim.hku.comp3330.DataClass.User;
+import tim.hku.comp3330.Database.DB;
 import tim.hku.comp3330.ui.home.HomeFragment;
 import tim.hku.comp3330.ui.login.LoginFragment;
 import tim.hku.comp3330.ui.projectDetails.projectDetail;
@@ -23,7 +28,7 @@ import tim.hku.comp3330.ui.projectDetails.projectDetail;
 public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
     Context c;
     ArrayList<Project> model;
-
+    DB database;
     public projectAdapter(Context c, ArrayList<Project> model) {
         this.c = c;
         this.model = model;
@@ -32,6 +37,7 @@ public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
     @NonNull
     @Override
     public projectHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        database = new DB(c);
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row,viewGroup,false);
 
         return new projectHolder(view);
@@ -44,6 +50,21 @@ public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
         int img = myHolder.itemView.getContext().getResources().getIdentifier(model.get(i).getProjectPic(),"drawable","tim.hku.comp3330");
         myHolder.mImageView.setImageResource(img);
         int projID = model.get(i).getProjectID();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+        int userID = prefs.getInt("userID",1);
+        Project proj = database.GetProject(projID);
+        if(proj.getOwnerID() == userID){
+            myHolder.join.setVisibility(View.GONE);
+            myHolder.join.setEnabled(false);
+        }
+        else{
+            myHolder.join.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ConstructRequestMessage(userID, proj.getOwnerID(), projID);
+                }
+            });
+        }
         myHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,10 +74,24 @@ public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
             }
         });
 
+
     }
 
     @Override
     public int getItemCount() {
         return model.size();
+    }
+
+    public void ConstructRequestMessage(int senderID, int receiverID, int projID){
+        Message msg = new Message();
+        Project proj = new Project();
+        User user = new User();
+        proj = database.GetProject(projID);
+        user = database.GetUserByID(senderID);
+        msg.setProjID(projID);
+        msg.setSenderID(receiverID);
+        msg.setReceiverID(senderID);
+        msg.setMessageContent(user.getUserName() + " wants to join the project <" + proj.getProjectName() + ">");
+        database.CreateMessage(msg);
     }
 }

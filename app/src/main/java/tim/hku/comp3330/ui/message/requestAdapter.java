@@ -26,7 +26,8 @@ public class requestAdapter extends RecyclerView.Adapter<requestHolder> {
     @NonNull
     @Override
     public requestHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fragment_request,viewGroup,false);
+        database = new DB(c);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.msg_request,viewGroup,false);
 
         return new requestHolder(view);
     }
