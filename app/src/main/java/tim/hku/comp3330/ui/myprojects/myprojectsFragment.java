@@ -41,7 +41,6 @@ public class myprojectsFragment extends Fragment {
         ArrayList<Project> models = new ArrayList<>();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         int userID = prefs.getInt("userID",1);
-        int total = database.GetProjectNum();
         models = database.GetProjectByUserID(userID);
         return models;
 

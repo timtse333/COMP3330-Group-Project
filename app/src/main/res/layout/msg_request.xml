@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/reqmsgView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="3dp"
+    app:cardElevation="3dp"
+    app:cardUseCompatPadding="true">
+
+
+    <RelativeLayout
+        android:id="@+id/reqmsgLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorBackground"
+        android:padding="16dp">
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/reqmsg_user_icon"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:padding="10dp"
+            android:src="@drawable/test"
+            app:civ_border_color="@color/colorBackground"
+            app:civ_border_width="2dp" />
+
+        <TextView
+            android:id="@+id/reqmsg_user_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_toEndOf="@id/reqmsg_user_icon"
+            android:layout_toRightOf="@id/reqmsg_user_icon"
+            android:text="username"
+            android:textColor="#ffffff"
+            android:textSize="18sp"
+            android:textStyle="bold"></TextView>
+
+        <TextView
+            android:id="@+id/reqmsg_msgContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/reqmsg_user_name"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_toEndOf="@id/reqmsg_user_icon"
+            android:text="post content"
+            android:textColor="#a9a9a9"
+            android:textSize="18sp"></TextView>
+
+        <Button
+            android:id="@+id/reqmsg_accept"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/reqmsg_msgContent"
+            android:layout_toEndOf="@id/reqmsg_user_icon"
+            android:text="Accept" />
+
+        <Button
+            android:id="@+id/reqmsg_reject"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/reqmsg_msgContent"
+            android:layout_marginStart="89dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="30dp"
+            android:layout_toEndOf="@id/reqmsg_accept"
+            android:text="Reject" />
+
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

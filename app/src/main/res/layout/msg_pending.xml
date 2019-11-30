@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/pendingmsgView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="3dp"
+    app:cardElevation="3dp"
+    app:cardUseCompatPadding="true">
+
+
+    <RelativeLayout
+        android:id="@+id/pendingmsgLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorBackground"
+        android:padding="16dp">
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/pendingmsg_user_icon"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:padding="10dp"
+            android:src="@drawable/test"
+            app:civ_border_color="@color/colorBackground"
+            app:civ_border_width="2dp" />
+
+        <TextView
+            android:id="@+id/pendingmsg_user_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_toEndOf="@id/pendingmsg_user_icon"
+            android:layout_toRightOf="@id/pendingmsg_user_icon"
+            android:text="username"
+            android:textColor="#ffffff"
+            android:textSize="18sp"
+            android:textStyle="bold"></TextView>
+
+        <TextView
+            android:id="@+id/pendingmsg_msgContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/pendingmsg_user_name"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_toEndOf="@id/pendingmsg_user_icon"
+            android:text="post content"
+            android:textColor="#a9a9a9"
+            android:textSize="18sp"></TextView>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/pendingmsg_proj_img"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_below="@id/pendingmsg_msgContent"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@id/pendingmsg_user_icon"
+            android:padding="10dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/project_test" />
+
+        <Button
+            android:id="@+id/pendingmsg_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/pendingmsg_proj_img"
+            android:layout_toEndOf="@id/pendingmsg_user_icon"
+            android:text="Cancel" />
+
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>
