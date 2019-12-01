@@ -22,6 +22,7 @@
                 android:layout_width="100dp"
                 android:layout_height="40dp"
                 android:padding="5dp"
+                android:id="@+id/cancelBtn"
                 android:text="Cancel"
                 android:textStyle="bold"
                 android:textColor="#1AA7D6"
@@ -37,6 +38,7 @@
             <Spinner
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
+                android:backgroundTint="#FFF"
                 android:id="@+id/project"
                 android:spinnerMode="dropdown"/>
 
@@ -44,8 +46,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:text="POST"
+                android:alpha="0.2"
                 android:textColor="#FFF"
-                android:background="@drawable/roundedbutton"
+                android:background="@drawable/roundedbutton_effect"
                 android:id="@+id/postBtn"></Button>
 
 
@@ -83,6 +86,7 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
+                    android:textColor="#E6E2E2"
                     android:textColorHint="#E6E2E2"
                     android:hint="How's the progress"
                     android:paddingTop="25dp"
@@ -95,6 +99,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:inputType="text|textMultiLine"
+                android:textColor="#E6E2E2"
                 android:textColorHint="#E6E2E2"
                 android:hint="What's happening?"
                 android:gravity="top|left"

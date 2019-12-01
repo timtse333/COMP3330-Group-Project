@@ -77,8 +77,7 @@ public class MainActivity extends AppCompatActivity {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent createProj = new Intent(view.getContext(), projectCreation.class);
-                    startActivity(createProj);
+                    navController.navigate(R.id.nav_post_progress );
                 }
             });
         }
