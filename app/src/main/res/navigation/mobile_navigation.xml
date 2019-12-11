@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_post_blog">
 
     <fragment
         android:id="@+id/nav_logout"
@@ -52,5 +52,11 @@
         android:name="tim.hku.comp3330.ui.post.PostProgressFragment"
         android:label="post_progress"
         tools:layout="@layout/fragment_post_progress" />
+
+    <fragment
+        android:id="@+id/nav_post_blog"
+        android:name="tim.hku.comp3330.ui.post.PostBlogFragment"
+        android:label="post_blog"
+        tools:layout="@layout/fragment_post_blog" />
 
 </navigation>
