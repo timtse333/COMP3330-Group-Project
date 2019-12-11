@@ -39,7 +39,7 @@ public class messageFragment extends Fragment {
         database = new DB(getActivity());
         msgTab = root.findViewById(R.id.msgTab);
         viewPager = root.findViewById(R.id.msgViewPager);
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         adapter.addFragment(new requestFragment(),"Request");
         adapter.addFragment(new responseFragment(), "Response");
         adapter.addFragment(new pendingFragment(), "Pending Request");
