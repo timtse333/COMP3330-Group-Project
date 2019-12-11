@@ -97,7 +97,7 @@ public class FragmentProgress extends Fragment {
 //        models.add(m);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        int projectID = prefs.getInt("projID",1);
+        int projectID = getArguments().getInt("projID");
         models = database.GetPostsByProjectID(projectID);
 
         return models;

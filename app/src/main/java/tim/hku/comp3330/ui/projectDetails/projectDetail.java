@@ -67,10 +67,9 @@ public class projectDetail extends Fragment {
         //Pass ProjID to fragments
         FragmentProgress fragProgress = new FragmentProgress();
         Bundle bundle=new Bundle();
-//        bundle.putInt("projID",project.getProjectID());
-//        fragProgress.setArguments(bundle);
-
-        adapter.addFragment(new FragmentProgress(),"Progress");
+        bundle.putInt("projID",project.getProjectID());
+        fragProgress.setArguments(bundle);
+        adapter.addFragment(fragProgress,"Progress");
         adapter.addFragment(new FragmentBlog(),"Blog");
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
