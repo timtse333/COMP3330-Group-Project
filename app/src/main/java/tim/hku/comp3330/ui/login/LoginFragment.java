@@ -128,6 +128,20 @@ public class LoginFragment extends Fragment{
             }
 
             @Override public void afterTextChanged(Editable editable) {
+                Query loginNameQuery = databaseRef.orderByChild("loginName").equalTo(loginEditText.getText().toString().trim());
+                loginNameQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()) {
+                            userExists = true;
+                            //TODO:Fetch userId from DB
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
         pwEditText.addTextChangedListener(new TextWatcher() {
@@ -147,22 +161,6 @@ public class LoginFragment extends Fragment{
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Query loginNameQuery = databaseRef.orderByChild("loginName").equalTo(loginEditText.getText().toString().trim());
-                loginNameQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(!dataSnapshot.exists()) {
-                            userExists = false;
-                        }else{
-                            userExists = true;
-                            //TODO:Fetch userId from DB
-                        }
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
                 new Util().verifyFromSQLite();
             }
         });
