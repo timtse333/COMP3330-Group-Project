@@ -20,6 +20,12 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -36,6 +42,8 @@ public class RegisterFragment extends Fragment {
     private DB database;
     private InputValidation inputValidation;
     private User user = new User();
+    private DatabaseReference databaseRef;
+    private Boolean exist = false;
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -58,6 +66,7 @@ public class RegisterFragment extends Fragment {
     }
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        databaseRef = FirebaseDatabase.getInstance().getReference("Users");
         TextInputEditText loginEditText = view.findViewById(R.id.textInputEditTextLoginName);
         TextInputEditText pwEditText = view.findViewById(R.id.textInputEditTextPassword);
         TextInputEditText confirmEditText = view.findViewById(R.id.textInputEditTextConfirmPassword);
@@ -78,12 +87,13 @@ public class RegisterFragment extends Fragment {
                         textInputLayoutConfirm, getString(R.string.error_password_match))) {
                     return;
                 }
-                if (!database.DuplicateLoginName(loginEditText.getText().toString().trim())) { // app stopping running this
+                if (!exist) { // app stopping running this
                     user.setLoginName(loginEditText.getText().toString().trim());
                     user.setPassword(pwEditText.getText().toString().trim());
                     user.setUserName(loginEditText.getText().toString().trim()); // Username equals to login name by default
                     database.CreateUser(user);
-
+                    String userRefID = databaseRef.push().getKey();
+                    databaseRef.child(userRefID).setValue(user);
                     // Snack Bar to show success message that record saved successfully
                     Snackbar.make(nestedScrollView, getString(R.string.success_message), Snackbar.LENGTH_LONG).show();
                     emptyInputEditText();
@@ -143,6 +153,23 @@ public class RegisterFragment extends Fragment {
         regButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Query queryToGetData = databaseRef.orderByChild("loginName").equalTo(loginEditText.getText().toString().trim());
+                queryToGetData.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(!dataSnapshot.exists()) {
+                            exist = false;
+                        }
+                        else{
+                            exist = true;
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
                 new Util().postDataToSQLite();
             }
         });
