@@ -83,12 +83,8 @@ public class MainActivity extends AppCompatActivity {
             });
         }
         else{
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                }
-            });
+            fab.setVisibility(View.GONE);
+            fab.setEnabled(false);
             drawer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
