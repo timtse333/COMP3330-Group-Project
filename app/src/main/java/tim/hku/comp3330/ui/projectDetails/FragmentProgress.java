@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -24,8 +31,10 @@ import tim.hku.comp3330.Database.DB;
 import tim.hku.comp3330.R;
 
 public class FragmentProgress extends Fragment {
-    RecyclerView myRecycleriew;
-    ProgressAdapter myAdapter;
+    private RecyclerView myRecycleriew;
+    private ProgressAdapter myAdapter;
+    private DatabaseReference databaseRef;
+    private int projectID;
     DB database;
 
     public void onAttach(@NonNull Context context) {
@@ -45,7 +54,10 @@ public class FragmentProgress extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //database = new DB(getActivity());
+        databaseRef = FirebaseDatabase.getInstance().getReference("ProgressPost");
         Bundle bundle = getArguments();
+        projectID = bundle.getInt("projID");
+        Log.d("myTag", "The project id is "+ projectID);
         View rootView = inflater.inflate(R.layout.progress_fragment, container, false);
         myRecycleriew = (RecyclerView) rootView.findViewById(R.id.recyclerView);
 
@@ -60,47 +72,41 @@ public class FragmentProgress extends Fragment {
 
 
     private ArrayList<ProgressPost> getMyList() {
-        ArrayList<ProgressPost> models = new ArrayList<>();
+        final ArrayList<ProgressPost> models = new ArrayList<>();
 
+        databaseRef.orderByChild("projectId").equalTo(projectID).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Log.d("myTag", "Can see child");
+                ProgressPost post = dataSnapshot.getValue(ProgressPost.class);
+                Log.d("myTag", "Post: " + post.getTitle());
+                models.add(post);
+            }
 
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-        // Testing Data:
+            }
 
-//        ProgressPost o = new ProgressPost();
-//        o.setProgressPostID(1);
-//        o.setOwnerID(1);
-//        o.setTitle("Created Repository for the project!!!");
-//        o.setContent("Please checkout the github repo!!!");
-//        Date currentTime = Calendar.getInstance().getTime();
-//        DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity().getApplicationContext());
-//        o.setCreated(dateFormat.format(currentTime));
-//        models.add(o);
-//
-//        ProgressPost n = new ProgressPost();
-//        n.setProgressPostID(1);
-//        n.setOwnerID(1);
-//        n.setTitle("Recruited the third member!");
-//        n.setContent("Nice to have Jon Snow joining our project! very cool!");
-//        Date currentTime1 = Calendar.getInstance().getTime();
-//        DateFormat dateFormat1 = android.text.format.DateFormat.getDateFormat(getActivity().getApplicationContext());
-//        n.setCreated(dateFormat1.format(currentTime1));
-//        models.add(n);
-//
-//        ProgressPost m = new ProgressPost();
-//        m.setProgressPostID(1);
-//        m.setOwnerID(1);
-//        m.setTitle("Project Created!!!");
-//        m.setContent("This project is just created, very, very cool!");
-//        Date currentTime2 = Calendar.getInstance().getTime();
-//        DateFormat dateFormat2 = android.text.format.DateFormat.getDateFormat(getActivity().getApplicationContext());
-//        m.setCreated(dateFormat2.format(currentTime2));
-//        models.add(m);
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        int projectID = getArguments().getInt("projID");
-        models = database.GetPostsByProjectID(projectID);
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         return models;
 
     }
+
+
 }
