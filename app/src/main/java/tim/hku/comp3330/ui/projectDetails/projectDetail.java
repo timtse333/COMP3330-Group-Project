@@ -61,8 +61,8 @@ public class projectDetail extends Fragment {
         database = new DB(getActivity());
         dbUtil = new DBUtil();
         databaseRef = FirebaseDatabase.getInstance().getReference("Projects");
-        Query loginNameQuery = databaseRef.orderByChild("projectID").equalTo(getArguments().getInt("projID")).limitToFirst(1);
-        loginNameQuery.addChildEventListener(new ChildEventListener() {
+        Query query = databaseRef.orderByChild("projectID").equalTo(getArguments().getInt("projID")).limitToFirst(1);
+        query.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 proj = dataSnapshot.getValue(Project.class);

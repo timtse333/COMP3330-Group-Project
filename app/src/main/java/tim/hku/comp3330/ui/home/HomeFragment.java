@@ -51,13 +51,12 @@ public class HomeFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    private ArrayList<Project> get_proj_from_db(){
+    private void get_proj_from_db(){
         databaseRef = FirebaseDatabase.getInstance().getReference("Projects");
         databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot proj : dataSnapshot.getChildren()){
-                    Log.d("test:", proj.toString());
                     itemList.add(proj);
 
                 }
@@ -71,7 +70,6 @@ public class HomeFragment extends Fragment {
 
             }
         });
-        return projList;
     }
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         database = new DB(getActivity());
