@@ -94,7 +94,7 @@ public class DB extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query, null);
         User users = new User();
         while (cursor.moveToNext()) {
-            users.setUserID(cursor.getInt(0));
+            users.setUserID(cursor.getString(0));
             users.setUserName(cursor.getString(1));
             users.setLoginName(cursor.getString(3));
             users.setPassword(cursor.getString(4));
@@ -147,7 +147,7 @@ public class DB extends SQLiteOpenHelper {
         User users = new User();
         if (cursor.moveToFirst()) {
             cursor.moveToFirst();
-            users.setUserID(Integer.parseInt(cursor.getString(0)));
+            users.setUserID(cursor.getString(0));
             users.setUserName(cursor.getString(1));
             //users.setUserIcon(DBUtil.getImage(cursor.getBlob(2)));
             cursor.close();
@@ -165,7 +165,7 @@ public class DB extends SQLiteOpenHelper {
             User users = new User();
             if (cursor.moveToFirst()) {
                 cursor.moveToFirst();
-                users.setUserID(Integer.parseInt(cursor.getString(0)));
+                users.setUserID(cursor.getString(0));
                 users.setUserName(cursor.getString(1));
                 //users.setUserIcon(DBUtil.getImage(cursor.getBlob(2)));
                 cursor.close();
@@ -189,7 +189,7 @@ public class DB extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query, null);
         User users = new User();
         if (cursor.moveToFirst()) {
-            users.setUserID(Integer.parseInt(cursor.getString(0)));
+            users.setUserID(cursor.getString(0));
             db.delete(USERS, USER_ID + " =? ", new String[]{
                     String.valueOf(users.getUserID())
             });
@@ -247,7 +247,7 @@ public class DB extends SQLiteOpenHelper {
             project.setProjectName(cursor.getString(1));
             project.setProjectDescription(cursor.getString(2));
             project.setProjectPic(cursor.getString(3));
-            project.setOwnerID(Integer.parseInt(cursor.getString(4)));
+            project.setOwnerID(cursor.getString(4));
             cursor.close();
         } else {
             project = null;
@@ -268,7 +268,7 @@ public class DB extends SQLiteOpenHelper {
                 project.setProjectName(cursor.getString(1));
                 project.setProjectDescription(cursor.getString(2));
                 project.setProjectPic(cursor.getString(3));
-                project.setOwnerID(Integer.parseInt(cursor.getString(4)));
+                project.setOwnerID(cursor.getString(4));
                 projList.add(project);
             }while(cursor.moveToNext());
         }

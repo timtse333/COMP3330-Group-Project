@@ -11,20 +11,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ShareActionProvider;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDirections;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -37,16 +31,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.List;
-
 import tim.hku.comp3330.Account.InputValidation;
-import tim.hku.comp3330.DataClass.Project;
-import tim.hku.comp3330.DataClass.User;
 import tim.hku.comp3330.Database.DB;
 import tim.hku.comp3330.MainActivity;
 import tim.hku.comp3330.R;
-import tim.hku.comp3330.projectList;
-import tim.hku.comp3330.ui.home.HomeFragment;
 
 public class LoginFragment extends Fragment{
 
@@ -54,7 +42,7 @@ public class LoginFragment extends Fragment{
     private DB database;
     private InputValidation inputValidation;
     private Boolean userExists = false;
-    private int userId;
+    private String userId;
     private DatabaseReference databaseRef;
     @Override
     public void onAttach(@NonNull Context context) {
@@ -87,11 +75,11 @@ public class LoginFragment extends Fragment{
         NestedScrollView nestedScrollView = view.findViewById(R.id.nestedScrollView);
         AppCompatTextView registerLink = view.findViewById(R.id.textViewLinkRegister);
             class Util{
-                private void verifyFromSQLite() {
+                private void verifyFromDB() {
                     if (!inputValidation.isInputEditTextFilled(loginEditText, textInputLayoutLogin, getString(R.string.error_message_login))) {
                         return;
                     }
-                    if (!inputValidation.isInputEditTextFilled(pwEditText, textInputLayoutLogin, getString(R.string.error_message_password))) {
+                    if (!inputValidation.isInputEditTextFilled(pwEditText, textInputLayoutPassword, getString(R.string.error_message_password))) {
                         return;
                     }
                     if (userExists) {
@@ -100,7 +88,7 @@ public class LoginFragment extends Fragment{
                         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
                         SharedPreferences.Editor editor = prefs.edit();
                         editor.putBoolean("IsLogin",true);
-                        editor.putInt("userID",userId);
+                        editor.putString("userID",userId);
                         editor.apply();
                         /*NavController nav = NavHostFragment.findNavController(LoginFragment.this);
                         nav.navigate(R.id.nav_myprojects );*/
@@ -128,13 +116,16 @@ public class LoginFragment extends Fragment{
             }
 
             @Override public void afterTextChanged(Editable editable) {
-                Query loginNameQuery = databaseRef.orderByChild("loginName").equalTo(loginEditText.getText().toString().trim());
+                Query loginNameQuery = databaseRef.orderByChild("loginName").equalTo(loginEditText.getText().toString().trim()).limitToFirst(1);
                 loginNameQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if(dataSnapshot.exists()) {
                             userExists = true;
                             //TODO:Fetch userId from DB
+                            for(DataSnapshot child : dataSnapshot.getChildren()){
+                                userId = child.getKey();
+                            }
                         }
                     }
                     @Override
@@ -161,7 +152,7 @@ public class LoginFragment extends Fragment{
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Util().verifyFromSQLite();
+                new Util().verifyFromDB();
             }
         });
         registerLink.setOnClickListener(new View.OnClickListener() {

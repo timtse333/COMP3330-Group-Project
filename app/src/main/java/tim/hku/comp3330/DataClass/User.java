@@ -3,13 +3,13 @@ package tim.hku.comp3330.DataClass;
 import android.graphics.Bitmap;
 
 public class User {
-    private int userID; // system generated, cannot be modified once user created
+    private String userID; // system generated, cannot be modified once user created
     private String userName;
     // private Bitmap userIcon;
     private String loginName;
     private String password;
     public User() {}
-    public User(int userID, String userName, String loginName, String password/*, Bitmap userIcon*/) {
+    public User(String userID, String userName, String loginName, String password/*, Bitmap userIcon*/) {
         this.userID = userID;
         this.userName = userName;
         this.loginName = loginName;
@@ -17,7 +17,7 @@ public class User {
         //this.userIcon = userIcon;
     }
     // getters and setters
-    public int getUserID() {
+    public String getUserID() {
         return userID;
     }
     public String getUserName() {
@@ -45,7 +45,7 @@ public class User {
         this.userIcon = userIcon;
     }*/
 
-    public void setUserID(int userID) {
+    public void setUserID(String userID) {
         this.userID = userID;
     }
 }

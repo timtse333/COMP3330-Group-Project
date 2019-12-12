@@ -93,6 +93,7 @@ public class RegisterFragment extends Fragment {
                     user.setUserName(loginEditText.getText().toString().trim()); // Username equals to login name by default
                     database.CreateUser(user);
                     String userRefID = databaseRef.push().getKey();
+                    user.setUserID(userRefID);
                     databaseRef.child(userRefID).setValue(user);
                     // Snack Bar to show success message that record saved successfully
                     Snackbar.make(nestedScrollView, getString(R.string.success_message), Snackbar.LENGTH_LONG).show();
