@@ -51,7 +51,7 @@ public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
         myHolder.mImageView.setImageResource(img);
         int projID = model.get(i).getProjectID();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
-        int userID = prefs.getInt("userID",1);
+        String userID = prefs.getString("userID","");
         Project proj = database.GetProject(projID);
         if(proj.getOwnerID() == userID){
             myHolder.join.setVisibility(View.GONE);
@@ -82,16 +82,16 @@ public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
         return model.size();
     }
 
-    public void ConstructRequestMessage(int senderID, int receiverID, int projID){
+    public void ConstructRequestMessage(String senderID, String receiverID, int projID){
         Message msg = new Message();
         Project proj = new Project();
         User user = new User();
-        proj = database.GetProject(projID);
+        /*proj = database.GetProject(projID);
         user = database.GetUserByID(senderID);
         msg.setProjID(projID);
         msg.setSenderID(senderID);
         msg.setReceiverID(receiverID);
         msg.setMessageContent(user.getUserName() + " wants to join the project <" + proj.getProjectName() + ">");
-        database.CreateMessage(msg);
+        database.CreateMessage(msg);*/
     }
 }

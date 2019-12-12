@@ -5,10 +5,10 @@ public class Project {
     private String projectName;
     private String projectDescription;
     private String projectPic;
-    private int ownerID;
+    private String ownerID;
     public Project(){}
 
-    public Project(int projectID, String projectName, String projectDescription, String projectPic, int ownerID) {
+    public Project(int projectID, String projectName, String projectDescription, String projectPic, String ownerID) {
         this.projectID = projectID;
         this.projectName = projectName;
         this.projectDescription = projectDescription;
@@ -51,11 +51,11 @@ public class Project {
         this.projectPic = projectPic;
     }
 
-    public int getOwnerID() {
+    public String getOwnerID() {
         return ownerID;
     }
 
-    public void setOwnerID(int ownerID) {
+    public void setOwnerID(String ownerID) {
         this.ownerID = ownerID;
     }
 

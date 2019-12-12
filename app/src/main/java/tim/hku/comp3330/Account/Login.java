@@ -66,7 +66,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         }
         if (database.GetUserByLoginName(textInputEditTextLogin.getText().toString().trim()) != null) {
             // TODO: start activity and load homepage for the user
-            List<Project> projList = database.GetProjectByUserID(database.GetUserByLoginName(textInputEditTextLogin.getText().toString().trim()).getUserID());
+            //List<Project> projList = database.GetProjectByUserID(database.GetUserByLoginName(textInputEditTextLogin.getText().toString().trim()).getUserID());
             emptyInputEditText();
 
         } else {
