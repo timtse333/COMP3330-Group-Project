@@ -19,10 +19,12 @@ import java.io.ByteArrayOutputStream;
 
 import tim.hku.comp3330.DataClass.Message;
 import tim.hku.comp3330.DataClass.Project;
+import tim.hku.comp3330.DataClass.UserProjectRelation;
 
 public class DBUtil {
     private DatabaseReference databaseRef;
     private DatabaseReference msgRef;
+    private DatabaseReference associatonRef;
     public DBUtil(){};
     Project proj = new Project();
     public static byte[] getBytes(Bitmap bitmap)
@@ -75,5 +77,13 @@ public class DBUtil {
         });
         return proj;
     }
-
+    public void updateMessage(Message msg){
+        msgRef = FirebaseDatabase.getInstance().getReference("Message");
+        msgRef.child(msg.getMessageID()).setValue(msg);
+    }
+    public void CreateRelation(UserProjectRelation relation){
+        associatonRef = FirebaseDatabase.getInstance().getReference("UserProjectRelation");
+        String relationRefID = associatonRef.push().getKey();
+        associatonRef.child(relationRefID).setValue(relation);
+    }
 }

@@ -12,6 +12,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 
 import tim.hku.comp3330.DataClass.Message;
@@ -22,7 +29,9 @@ public class requestFragment extends Fragment {
     RecyclerView myRecycleriew;
     requestAdapter adapter;
     DB database;
-
+    DatabaseReference msgRef;
+    private ArrayList<Message>msgList = new ArrayList<>();
+    private int count = 1;
     public requestFragment(){};
 
     @Nullable
@@ -33,18 +42,36 @@ public class requestFragment extends Fragment {
         myRecycleriew = (RecyclerView) rootView.findViewById(R.id.requestRecyclerView);
 
         myRecycleriew.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        adapter = new requestAdapter(getActivity(),getMyList());
+        getMyList();
+        adapter = new requestAdapter(getActivity(),msgList);
         myRecycleriew.setAdapter(adapter);
 
 
         return rootView;
     }
-    private ArrayList<Message> getMyList() {
-        ArrayList<Message> msgList = new ArrayList<Message>();
+    private void getMyList() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        int userID = prefs.getInt("userID",1);
-        msgList = database.GetAliveIncomingMessages(userID);
-        return msgList;
+        String userID = prefs.getString("userID","");
+        msgRef = FirebaseDatabase.getInstance().getReference("Message");
+        Query msgQuery = msgRef.orderByChild("receiverID").equalTo(userID);
+        msgQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(count == 1) {
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        msgList.add(child.getValue(Message.class));
+                    }
+                    count++;
+                }
+                adapter = new requestAdapter(getActivity(),msgList);
+                myRecycleriew.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
 }
