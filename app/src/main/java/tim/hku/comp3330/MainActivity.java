@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View view) {
 //                    Intent intent = new Intent(getApplicationContext(), projectCreation.class);
 //                    startActivity(intent);
-                    navController.navigate(R.id.nav_project_create );
+                    navController.navigate(R.id.nav_post_blog );
                 }
             });
         }

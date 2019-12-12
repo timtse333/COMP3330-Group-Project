@@ -292,9 +292,7 @@ public class PostBlogFragment extends Fragment {
                         blog.setProjectId(project.getProjectID());
                         blog.setBlogPostID(postId);
                         blog.setOwnerID(ownerID);
-                        Date currentTime = Calendar.getInstance().getTime();
-                        DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity().getApplicationContext());
-                        blog.setCreated(dateFormat.format(currentTime));
+                        blog.setCreated(DateFormat.getDateTimeInstance().format(new Date()));
                         if(imageUri != null){
                             blog.setBlogPostPic("True");
                         }
@@ -339,9 +337,7 @@ public class PostBlogFragment extends Fragment {
         int postId = count + 1;
         blog.setBlogPostID(postId);
         blog.setOwnerID(ownerID);
-        Date currentTime = Calendar.getInstance().getTime();
-        DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity().getApplicationContext());
-        blog.setCreated(dateFormat.format(currentTime));
+        blog.setCreated(DateFormat.getDateTimeInstance().format(new Date()));
         if(imageUri != null){
             blog.setBlogPostPic("True");
         }

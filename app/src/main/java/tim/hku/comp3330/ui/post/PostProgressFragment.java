@@ -251,7 +251,7 @@ public class PostProgressFragment extends Fragment {
         post.setProgressPostID(id);
         Date currentTime = Calendar.getInstance().getTime();
         DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity().getApplicationContext());
-        post.setCreated(dateFormat.format(currentTime));
+        post.setCreated(DateFormat.getDateTimeInstance().format(new Date()));
         String blogHash = progressRef.push().getKey();
         progressRef.child(blogHash).setValue(post);
 
