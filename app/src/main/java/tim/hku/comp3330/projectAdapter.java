@@ -21,6 +21,7 @@ import tim.hku.comp3330.DataClass.Message;
 import tim.hku.comp3330.DataClass.Project;
 import tim.hku.comp3330.DataClass.User;
 import tim.hku.comp3330.Database.DB;
+import tim.hku.comp3330.Database.DBUtil;
 import tim.hku.comp3330.ui.home.HomeFragment;
 import tim.hku.comp3330.ui.login.LoginFragment;
 import tim.hku.comp3330.ui.projectDetails.projectDetail;
@@ -29,6 +30,7 @@ public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
     Context c;
     ArrayList<Project> model;
     DB database;
+    DBUtil dbUtil;
     public projectAdapter(Context c, ArrayList<Project> model) {
         this.c = c;
         this.model = model;
@@ -38,6 +40,7 @@ public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
     @Override
     public projectHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         database = new DB(c);
+        dbUtil = new DBUtil();
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row,viewGroup,false);
 
         return new projectHolder(view);
@@ -49,11 +52,11 @@ public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
         myHolder.mDes.setText(model.get(i).getProjectDescription());
         int img = myHolder.itemView.getContext().getResources().getIdentifier(model.get(i).getProjectPic(),"drawable","tim.hku.comp3330");
         myHolder.mImageView.setImageResource(img);
-        int projID = model.get(i).getProjectID();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
         String userID = prefs.getString("userID","");
-        Project proj = database.GetProject(projID);
-        if(proj.getOwnerID() == userID){
+        Project proj = model.get(i);
+        int projID = proj.getProjectID();
+        if(proj.getOwnerID().equals(userID)){
             myHolder.join.setVisibility(View.GONE);
             myHolder.join.setEnabled(false);
         }
