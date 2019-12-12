@@ -15,6 +15,13 @@ import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 
 import tim.hku.comp3330.DataClass.Message;
@@ -24,13 +31,15 @@ import tim.hku.comp3330.Database.DB;
 import tim.hku.comp3330.Database.DBUtil;
 import tim.hku.comp3330.ui.home.HomeFragment;
 import tim.hku.comp3330.ui.login.LoginFragment;
+import tim.hku.comp3330.ui.myprojects.myProjectsAdapter;
 import tim.hku.comp3330.ui.projectDetails.projectDetail;
 
 public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
     Context c;
     ArrayList<Project> model;
-    DB database;
     DBUtil dbUtil;
+    DatabaseReference userRef;
+    User user = new User();
     public projectAdapter(Context c, ArrayList<Project> model) {
         this.c = c;
         this.model = model;
@@ -39,7 +48,6 @@ public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
     @NonNull
     @Override
     public projectHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        database = new DB(c);
         dbUtil = new DBUtil();
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row,viewGroup,false);
 
@@ -55,7 +63,6 @@ public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
         String userID = prefs.getString("userID","");
         Project proj = model.get(i);
-        int projID = proj.getProjectID();
         if(proj.getOwnerID().equals(userID)){
             myHolder.join.setVisibility(View.GONE);
             myHolder.join.setEnabled(false);
@@ -64,7 +71,7 @@ public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
             myHolder.join.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ConstructRequestMessage(userID, proj.getOwnerID(), projID);
+                    ConstructRequestMessage(userID, proj.getOwnerID(), proj);
                 }
             });
         }
@@ -72,7 +79,7 @@ public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
-                bundle.putInt("projID", projID);
+                bundle.putInt("projID", proj.getProjectID());
                 Navigation.findNavController(v).navigate(R.id.nav_project_test,bundle);
             }
         });
@@ -85,16 +92,27 @@ public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
         return model.size();
     }
 
-    public void ConstructRequestMessage(String senderID, String receiverID, int projID){
+    public void ConstructRequestMessage(String senderID, String receiverID, Project project){
         Message msg = new Message();
-        Project proj = new Project();
-        User user = new User();
-        /*proj = database.GetProject(projID);
-        user = database.GetUserByID(senderID);
-        msg.setProjID(projID);
-        msg.setSenderID(senderID);
-        msg.setReceiverID(receiverID);
-        msg.setMessageContent(user.getUserName() + " wants to join the project <" + proj.getProjectName() + ">");
-        database.CreateMessage(msg);*/
+        userRef = FirebaseDatabase.getInstance().getReference("Users");
+        Query userQuery = userRef.orderByChild("userID").equalTo(senderID).limitToFirst(1);
+        userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot child : dataSnapshot.getChildren()){
+                    user = child.getValue(User.class);
+                    msg.setProjID(project.getProjectID());
+                    msg.setSenderID(senderID);
+                    msg.setReceiverID(receiverID);
+                    msg.setMessageContent(user.getUserName() + " wants to join the project <" + project.getProjectName() + ">");
+                    dbUtil.CreateMessage(msg);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }

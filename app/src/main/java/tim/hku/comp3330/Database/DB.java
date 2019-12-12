@@ -391,10 +391,10 @@ public class DB extends SQLiteOpenHelper {
             if (cursor.moveToFirst()) {
                 do{
                     Message msg = new Message();
-                    msg.setMessageID(Integer.parseInt(cursor.getString(0)));
+                    msg.setMessageID(cursor.getString(0));
                     msg.setMessageContent(cursor.getString(1));
-                    msg.setSenderID(Integer.parseInt(cursor.getString(2)));
-                    msg.setReceiverID(Integer.parseInt(cursor.getString(3)));
+                    msg.setSenderID(cursor.getString(2));
+                    msg.setReceiverID(cursor.getString(3));
                     msg.setProjID(Integer.parseInt(cursor.getString(4)));
                     msg.setDeleted(true); // only deleted message will be added to this list, can assume this to be true for all msgs
                     msgList.add(msg);
@@ -416,10 +416,10 @@ public class DB extends SQLiteOpenHelper {
             if (cursor.moveToFirst()) {
                 do{
                     Message msg = new Message();
-                    msg.setMessageID(Integer.parseInt(cursor.getString(0)));
+                    msg.setMessageID(cursor.getString(0));
                     msg.setMessageContent(cursor.getString(1));
-                    msg.setSenderID(Integer.parseInt(cursor.getString(2)));
-                    msg.setReceiverID(Integer.parseInt(cursor.getString(3)));
+                    msg.setSenderID(cursor.getString(2));
+                    msg.setReceiverID(cursor.getString(3));
                     msg.setProjID(Integer.parseInt(cursor.getString(4)));
                     msg.setDeleted(true); // only deleted message will be added to this list, can assume this to be true for all msgs
                     msgList.add(msg);
@@ -442,10 +442,10 @@ public class DB extends SQLiteOpenHelper {
             if (cursor.moveToFirst()) {
                 do{
                     Message msg = new Message();
-                    msg.setMessageID(Integer.parseInt(cursor.getString(0)));
+                    msg.setMessageID(cursor.getString(0));
                     msg.setMessageContent(cursor.getString(1));
-                    msg.setSenderID(Integer.parseInt(cursor.getString(2)));
-                    msg.setReceiverID(Integer.parseInt(cursor.getString(3)));
+                    msg.setSenderID(cursor.getString(2));
+                    msg.setReceiverID(cursor.getString(3));
                     msg.setProjID(Integer.parseInt(cursor.getString(4)));
                     msg.setDeleted(false); // only un-deleted message will be added to this list, can assume this to be false for all msgs
                     msgList.add(msg);
@@ -469,10 +469,10 @@ public class DB extends SQLiteOpenHelper {
             if (cursor.moveToFirst()) {
                 do{
                     Message msg = new Message();
-                    msg.setMessageID(Integer.parseInt(cursor.getString(0)));
+                    msg.setMessageID(cursor.getString(0));
                     msg.setMessageContent(cursor.getString(1));
-                    msg.setSenderID(Integer.parseInt(cursor.getString(2)));
-                    msg.setReceiverID(Integer.parseInt(cursor.getString(3)));
+                    msg.setSenderID(cursor.getString(2));
+                    msg.setReceiverID(cursor.getString(3));
                     msg.setProjID(Integer.parseInt(cursor.getString(4)));
                     msg.setDeleted(false); // only un-deleted message will be added to this list, can assume this to be false for all msgs
                     msgList.add(msg);
@@ -491,10 +491,10 @@ public class DB extends SQLiteOpenHelper {
             Cursor cursor = db.rawQuery(query, null);
             Message msg = new Message();
             if (cursor.moveToFirst()) {
-                msg.setMessageID(Integer.parseInt(cursor.getString(0)));
+                msg.setMessageID(cursor.getString(0));
                 msg.setMessageContent(cursor.getString(1));
-                msg.setSenderID(Integer.parseInt(cursor.getString(2)));
-                msg.setReceiverID(Integer.parseInt(cursor.getString(3)));
+                msg.setSenderID(cursor.getString(2));
+                msg.setReceiverID(cursor.getString(3));
                 msg.setProjID(Integer.parseInt(cursor.getString(4)));
                 msg.setDeleted(Integer.parseInt(cursor.getString(5)) == 0 ? false : true);
                 cursor.close();

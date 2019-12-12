@@ -17,10 +17,12 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.ByteArrayOutputStream;
 
+import tim.hku.comp3330.DataClass.Message;
 import tim.hku.comp3330.DataClass.Project;
 
 public class DBUtil {
     private DatabaseReference databaseRef;
+    private DatabaseReference msgRef;
     public DBUtil(){};
     Project proj = new Project();
     public static byte[] getBytes(Bitmap bitmap)
@@ -37,6 +39,13 @@ public class DBUtil {
         databaseRef = FirebaseDatabase.getInstance().getReference("Projects");
         String projRefID = databaseRef.push().getKey();
         databaseRef.child(projRefID).setValue(project);
+    }
+
+    public void CreateMessage(Message msg){
+        msgRef = FirebaseDatabase.getInstance().getReference("Message");
+        String msgRefID = msgRef.push().getKey();
+        msg.setMessageID(msgRefID);
+        msgRef.child(msgRefID).setValue(msg);
     }
     public Project GetProjectByID(int projID){
         databaseRef = FirebaseDatabase.getInstance().getReference("Projects");
