@@ -2,9 +2,12 @@ package tim.hku.comp3330.Database;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,18 +41,27 @@ public class DBUtil {
     public Project GetProjectByID(int projID){
         databaseRef = FirebaseDatabase.getInstance().getReference("Projects");
         Query loginNameQuery = databaseRef.orderByChild("projectID").equalTo(projID).limitToFirst(1);
-        loginNameQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+        loginNameQuery.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()) {
-                    //TODO:Fetch userId from DB
-                    for(DataSnapshot child : dataSnapshot.getChildren()){
-                        proj = child.getValue(Project.class);
-                    }
-                }
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                proj = dataSnapshot.getValue(Project.class);
             }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
         return proj;
