@@ -77,9 +77,9 @@ public class MainActivity extends AppCompatActivity {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(getApplicationContext(), projectCreation.class);
-                    startActivity(intent);
-                    //navController.navigate(R.id.nav_post_progress );
+//                    Intent intent = new Intent(getApplicationContext(), projectCreation.class);
+//                    startActivity(intent);
+                    navController.navigate(R.id.nav_post_progress );
                 }
             });
         }

@@ -342,7 +342,7 @@ public class DB extends SQLiteOpenHelper {
                     ProgressPost post = new ProgressPost();
                     post.setProgressPostID(Integer.parseInt(cursor.getString(0)));
                     post.setProjectId(Integer.parseInt(cursor.getString(1)));
-                    post.setOwnerID(Integer.parseInt(cursor.getString(2)));
+                    post.setOwnerID((cursor.getString(2)));
                     post.setTitle(cursor.getString(3));
                     post.setContent(cursor.getString(4));
                     post.setCreated(cursor.getString(5));

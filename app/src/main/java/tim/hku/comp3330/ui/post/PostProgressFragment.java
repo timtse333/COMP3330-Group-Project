@@ -23,6 +23,14 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.StorageReference;
+
 import org.w3c.dom.Text;
 
 import java.text.DateFormat;
@@ -38,15 +46,22 @@ import tim.hku.comp3330.R;
 
 public class PostProgressFragment extends Fragment {
 
-    Spinner projectList;
-    Button postBtn;
-    TextView cancelBtn;
-    DB database;
-    ProgressPost post;
-    EditText topic;
-    EditText content;
-    TextWatcher checkPost;
-    int ProjectId;
+    private Spinner projectList;
+    private Button postBtn;
+    private TextView cancelBtn;
+    private DB database;
+    private ProgressPost post;
+    private EditText topic;
+    private EditText content;
+    private TextWatcher checkPost;
+    private StorageReference storageRef;
+    private DatabaseReference databaseRef;
+    private DatabaseReference progressRef;
+    private DatabaseReference projectRef;
+    private DatabaseReference relationRef;
+    ArrayAdapter<Project> adapter;
+    private String ownerID;
+    private int count;
 
    public PostProgressFragment() {
        // empty constructor
@@ -58,6 +73,14 @@ public class PostProgressFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_post_progress, container, false);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        count = 0;
+        ownerID = prefs.getString("userID","no");
+        Log.d("myTag", "OwnerID is " + ownerID);
+        progressRef = FirebaseDatabase.getInstance().getReference("ProgressPost");
+        projectRef = FirebaseDatabase.getInstance().getReference("Projects");
+        relationRef = FirebaseDatabase.getInstance().getReference("UserProjectRelation");
+        getNewProgressId();
         checkPost = new TextWatcher(){
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -92,10 +115,9 @@ public class PostProgressFragment extends Fragment {
         postBtn.setOnClickListener(new Button.OnClickListener(){
             public void onClick(View view){
 
-                postDataToSQLite();
+                postProgress();
                 Bundle bundle = new Bundle();
-                Navigation.findNavController(view).navigate(R.id.nav_home,bundle);
-                Log.d("checkButton","The result is" + checkReadiness());
+                Navigation.findNavController(view).navigate(R.id.nav_home, bundle);
             }
         });
         postBtn.setEnabled(false);
@@ -106,7 +128,7 @@ public class PostProgressFragment extends Fragment {
                 Navigation.findNavController(view).navigate(R.id.nav_home,bundle);
             }
         });
-        ArrayAdapter<Project> adapter = new ArrayAdapter<>(getActivity(), R.layout.project_drop_down_item, getMyList());
+        adapter = new ArrayAdapter<>(getActivity(), R.layout.project_drop_down_item, getProjectList());
         projectList.setAdapter(adapter);
         return rootView;
     }
@@ -118,7 +140,7 @@ public class PostProgressFragment extends Fragment {
         post.setTitle(topic.getText().toString().trim());
         post.setContent(content.getText().toString().trim());
         post.setProjectId(project.getProjectID());
-        post.setOwnerID(userID);
+        post.setOwnerID(ownerID);
         Date currentTime = Calendar.getInstance().getTime();
         DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity().getApplicationContext());
         post.setCreated(dateFormat.format(currentTime));
@@ -128,11 +150,74 @@ public class PostProgressFragment extends Fragment {
 
     }
 
-    private ArrayList<Project> getMyList() {
-        ArrayList<Project> models = new ArrayList<>();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        int userID = prefs.getInt("userID",1);
-        models = database.GetProjectByUserID(userID);
+
+
+    private ArrayList<Project> getProjectList() {
+        Log.d("myTag", "get Project List is called ");
+        Log.d("myTag", "OWNERID:" + ownerID);
+        final ArrayList<Project> models = new ArrayList<>();
+        relationRef.orderByChild("userID").equalTo(ownerID).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String preChildKey) {
+                final int searchkey = dataSnapshot.child("projectID").getValue(int.class);
+                projectRef.orderByChild("projectID").equalTo(searchkey).addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        Log.d("myTag", "getting from firebase");
+                        Project project = new Project();
+                        project.setOwnerID(dataSnapshot.child("ownerID").getValue(String.class));
+                        project.setProjectID(dataSnapshot.child("projectID").getValue(int.class));
+                        project.setProjectDescription(dataSnapshot.child("projectDescription").getValue().toString());
+                        project.setProjectName(dataSnapshot.child("projectName").getValue().toString());
+                        models.add(project);
+                        Log.d("myTag", "The project id is "+project.getProjectName());
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+
+        });
         return models;
     }
 
@@ -153,5 +238,38 @@ public class PostProgressFragment extends Fragment {
        else {
            return false;
        }
+    }
+
+    private void postProgress() {
+
+        Project project = (Project) projectList.getSelectedItem();
+        post.setTitle(topic.getText().toString().trim());
+        post.setContent(content.getText().toString().trim());
+        post.setProjectId(project.getProjectID());
+        post.setOwnerID(ownerID);
+        int id = count + 1;
+        post.setProgressPostID(id);
+        Date currentTime = Calendar.getInstance().getTime();
+        DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity().getApplicationContext());
+        post.setCreated(dateFormat.format(currentTime));
+        String blogHash = progressRef.push().getKey();
+        progressRef.child(blogHash).setValue(post);
+
+    }
+
+    private void getNewProgressId(){
+        progressRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    count++ ;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }
