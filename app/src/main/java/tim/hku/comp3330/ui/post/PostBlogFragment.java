@@ -3,6 +3,7 @@ package tim.hku.comp3330.ui.post;
 
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,12 +11,18 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.os.Handler;
+import android.preference.PreferenceManager;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,8 +33,12 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -36,8 +47,15 @@ import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
 import tim.hku.comp3330.DataClass.BlogPicture;
+import tim.hku.comp3330.DataClass.BlogPost;
 import tim.hku.comp3330.DataClass.ProgressPost;
+import tim.hku.comp3330.DataClass.Project;
 import tim.hku.comp3330.Database.DB;
 import tim.hku.comp3330.R;
 
@@ -58,9 +76,16 @@ public class PostBlogFragment extends Fragment {
     private EditText content;
     private ImageView uploaded;
     private ProgressBar progressBar;
+    private BlogPost blog;
+    private int count;
+    private int ownerID;
+    private ArrayAdapter<Project> adapter;
+    private TextWatcher checkPost;
 
     private StorageReference storageRef;
     private DatabaseReference databaseRef;
+    private DatabaseReference blogRef;
+    private DatabaseReference projectRef;
 
     private Uri imageUri;
 
@@ -75,6 +100,29 @@ public class PostBlogFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_post_blog, container, false);
+        checkPost = new TextWatcher(){
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                postBtn.setEnabled(checkReadiness());
+                if(checkReadiness()){
+                    postBtn.setAlpha(1);
+                }
+                else {
+                    postBtn.setAlpha((float) 0.2);
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
         postBtn = (Button) rootView.findViewById(R.id.postBtn);
         pictureBtn = (Button) rootView.findViewById(R.id.pictureBtn);
         projectList = (Spinner) rootView.findViewById(R.id.project);
@@ -83,9 +131,19 @@ public class PostBlogFragment extends Fragment {
         uploaded = (ImageView) rootView.findViewById(R.id.uploadImage);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
 
+        content.addTextChangedListener(checkPost);
+        count = 0;
+        blog = new BlogPost();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        ownerID = prefs.getInt("userID",1);
+        Log.d("myTag", "The owner id is "+ownerID);
+
         storageRef = FirebaseStorage.getInstance().getReference("blogPics");
         databaseRef = FirebaseDatabase.getInstance().getReference("blogPics");
+        blogRef = FirebaseDatabase.getInstance().getReference("BlogPost");
+        projectRef = FirebaseDatabase.getInstance().getReference("Project");
 
+        getNewBlogId();
         pictureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
@@ -99,10 +157,16 @@ public class PostBlogFragment extends Fragment {
                 if(imageUri != null) {
                     uploadFile();
                 }
+                else {
+                    postBlog();
+                    Bundle bundle = new Bundle();
+                    Navigation.findNavController(v).navigate(R.id.nav_home, bundle);
+                }
             }
         });
 
-
+        adapter = new ArrayAdapter<>(getActivity(), R.layout.project_drop_down_item, getProjectList());
+        projectList.setAdapter(adapter);
         return rootView;
     }
 
@@ -119,6 +183,65 @@ public class PostBlogFragment extends Fragment {
         return mime.getExtensionFromMimeType(cR.getType(uri));
     }
 
+    private void getNewBlogId(){
+        blogRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    count++ ;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private ArrayList<Project> getProjectList() {
+        Log.d("myTag", "get Project List is called ");
+        final ArrayList<Project> models = new ArrayList<>();
+        projectRef.orderByChild("ownerID").equalTo(ownerID).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String preChildKey) {
+                Log.d("myTag", "getting from firebase");
+                Project project = new Project();
+                project.setOwnerID(dataSnapshot.child("ownerID").getValue(int.class));
+                project.setProjectID(dataSnapshot.child("projectID").getValue(int.class));
+                project.setProjectDescription(dataSnapshot.child("projectDescription").getValue().toString());
+                project.setProjectName(dataSnapshot.child("projectName").getValue().toString());
+                models.add(project);
+                Log.d("myTag", "The project id is "+project.getProjectName());
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+
+        });
+
+        return models;
+    }
+
     private void uploadFile() {
         StorageReference fileReference = storageRef.child(System.currentTimeMillis()+"."+getFileExtension(imageUri));
         fileReference.putFile(imageUri)
@@ -132,9 +255,25 @@ public class PostBlogFragment extends Fragment {
                                 progressBar.setProgress(0);
                             }
                         },500);
-                        BlogPicture picture = new BlogPicture(1,taskSnapshot.getUploadSessionUri().toString());
+                        int postId = count + 1;
+                        BlogPicture picture = new BlogPicture(postId,taskSnapshot.getUploadSessionUri().toString());
                         String pictureId = databaseRef.push().getKey();
                         databaseRef.child(pictureId).setValue(picture);
+                        Project project = (Project) projectList.getSelectedItem();
+                        blog.setContent(content.getText().toString().trim());
+                        blog.setProjectId(project.getProjectID());
+                        blog.setBlogPostID(postId);
+                        blog.setOwnerID(ownerID);
+                        Date currentTime = Calendar.getInstance().getTime();
+                        DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity().getApplicationContext());
+                        blog.setCreated(dateFormat.format(currentTime));
+                        if(imageUri != null){
+                            blog.setBlogPostPic("True");
+                        }
+                        String blogHash = blogRef.push().getKey();
+                        blogRef.child(blogHash).setValue(blog);
+                        Bundle bundle = new Bundle();
+                        Navigation.findNavController(getView()).navigate(R.id.nav_home, bundle);
 
                     }
                 })
@@ -161,6 +300,39 @@ public class PostBlogFragment extends Fragment {
             imageUri = data.getData();
 
             Picasso.with(getActivity()).load(imageUri).into(uploaded);
+        }
+    }
+
+    private void postBlog() {
+
+        Project project = (Project) projectList.getSelectedItem();
+        blog.setContent(content.getText().toString().trim());
+        blog.setProjectId(project.getProjectID());
+        int postId = count + 1;
+        blog.setBlogPostID(postId);
+        blog.setOwnerID(ownerID);
+        Date currentTime = Calendar.getInstance().getTime();
+        DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity().getApplicationContext());
+        blog.setCreated(dateFormat.format(currentTime));
+        if(imageUri != null){
+            blog.setBlogPostPic("True");
+        }
+        String blogHash = blogRef.push().getKey();
+        blogRef.child(blogHash).setValue(blog);
+
+    }
+
+    private Boolean checkReadiness() {
+        if (projectList.getSelectedItem() != null){
+            if (!content.getText().toString().matches("")) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            return false;
         }
     }
 }
