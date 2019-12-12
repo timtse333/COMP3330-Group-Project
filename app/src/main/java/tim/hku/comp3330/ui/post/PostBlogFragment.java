@@ -78,7 +78,7 @@ public class PostBlogFragment extends Fragment {
     private ProgressBar progressBar;
     private BlogPost blog;
     private int count;
-    private int ownerID;
+    private String ownerID;
     private ArrayAdapter<Project> adapter;
     private TextWatcher checkPost;
 
@@ -86,6 +86,7 @@ public class PostBlogFragment extends Fragment {
     private DatabaseReference databaseRef;
     private DatabaseReference blogRef;
     private DatabaseReference projectRef;
+    private DatabaseReference relationRef;
 
     private Uri imageUri;
 
@@ -135,13 +136,14 @@ public class PostBlogFragment extends Fragment {
         count = 0;
         blog = new BlogPost();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        ownerID = prefs.getInt("userID",1);
+        ownerID = prefs.getString("userID","no");
         Log.d("myTag", "The owner id is "+ownerID);
 
         storageRef = FirebaseStorage.getInstance().getReference("blogPics");
         databaseRef = FirebaseDatabase.getInstance().getReference("blogPics");
         blogRef = FirebaseDatabase.getInstance().getReference("BlogPost");
-        projectRef = FirebaseDatabase.getInstance().getReference("Project");
+        projectRef = FirebaseDatabase.getInstance().getReference("Projects");
+        relationRef = FirebaseDatabase.getInstance().getReference("UserProjectRelation");
 
         getNewBlogId();
         pictureBtn.setOnClickListener(new View.OnClickListener() {
@@ -202,18 +204,44 @@ public class PostBlogFragment extends Fragment {
     private ArrayList<Project> getProjectList() {
         Log.d("myTag", "get Project List is called ");
         final ArrayList<Project> models = new ArrayList<>();
-        projectRef.orderByChild("ownerID").equalTo(ownerID).addChildEventListener(new ChildEventListener() {
+        relationRef.orderByChild("userID").equalTo(ownerID).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String preChildKey) {
-                Log.d("myTag", "getting from firebase");
-                Project project = new Project();
-                project.setOwnerID(dataSnapshot.child("ownerID").getValue(String.class));
-                project.setProjectID(dataSnapshot.child("projectID").getValue(int.class));
-                project.setProjectDescription(dataSnapshot.child("projectDescription").getValue().toString());
-                project.setProjectName(dataSnapshot.child("projectName").getValue().toString());
-                models.add(project);
-                Log.d("myTag", "The project id is "+project.getProjectName());
-                adapter.notifyDataSetChanged();
+                final int searchkey = dataSnapshot.child("projectID").getValue(int.class);
+                projectRef.orderByChild("projectID").equalTo(searchkey).addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        Log.d("myTag", "getting from firebase");
+                        Project project = new Project();
+                        project.setOwnerID(dataSnapshot.child("ownerID").getValue(String.class));
+                        project.setProjectID(dataSnapshot.child("projectID").getValue(int.class));
+                        project.setProjectDescription(dataSnapshot.child("projectDescription").getValue().toString());
+                        project.setProjectName(dataSnapshot.child("projectName").getValue().toString());
+                        models.add(project);
+                        Log.d("myTag", "The project id is "+project.getProjectName());
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
 
             @Override

@@ -32,8 +32,10 @@ import java.util.Date;
 
 import tim.hku.comp3330.DataClass.ProgressPost;
 import tim.hku.comp3330.DataClass.Project;
+import tim.hku.comp3330.DataClass.UserProjectRelation;
 import tim.hku.comp3330.Database.DB;
 import tim.hku.comp3330.R;
+import tim.hku.comp3330.Database.DBUtil;
 
 
 public class ProjectCreate extends Fragment {
@@ -44,8 +46,10 @@ public class ProjectCreate extends Fragment {
     private EditText description;
     private TextWatcher checkPost;
     private DatabaseReference databaseRef;
-    private int count;
+    private DatabaseReference relationRef;
     private long projCount = 0;
+    private DBUtil dbUtil;
+
     public ProjectCreate() {
     }
 
@@ -53,7 +57,7 @@ public class ProjectCreate extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_project_create, container, false);
-        get_data_from_db();
+        dbUtil = new DBUtil();
         checkPost = new TextWatcher(){
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -77,8 +81,8 @@ public class ProjectCreate extends Fragment {
 
             }
         };
-        // count of existing project, for assigning id
-        count = 0;
+        get_data_from_db();
+        relationRef = FirebaseDatabase.getInstance().getReference("UserProjectRelation");
         project = new Project();
         name = (EditText)rootView.findViewById(R.id.name);
         name.addTextChangedListener(checkPost);
@@ -92,18 +96,32 @@ public class ProjectCreate extends Fragment {
                 Navigation.findNavController(view).navigate(R.id.nav_home,bundle);
             }
         });
-        databaseRef = FirebaseDatabase.getInstance().getReference("Project");
         createBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-                createProject();
-                Bundle bundle = new Bundle();
-                Navigation.findNavController(v).navigate(R.id.nav_home,bundle);
+                postDataToDB();
             }
         });
 
         return rootView;
     }
+
+    private Boolean checkReadiness() {
+            if (!name.getText().toString().matches("")) {
+                if(!description.getText().toString().matches("")){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+            else {
+                return false;
+            }
+        }
+
+
+
     private void get_data_from_db(){
         databaseRef = FirebaseDatabase.getInstance().getReference("Projects");
         databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -122,40 +140,25 @@ public class ProjectCreate extends Fragment {
             }
         });
     }
-    private Boolean checkReadiness() {
-            if (!name.getText().toString().matches("")) {
-                if(!description.getText().toString().matches("")){
-                    return true;
-                }
-                else{
-                    return false;
-                }
-            }
-            else {
-                return false;
-            }
-        }
 
-    private void createProject() {
-        databaseRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                count++;
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+    private void postDataToDB() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String userID = prefs.getString("userID","");
         project.setProjectName(name.getText().toString().trim());
         project.setProjectDescription(description.getText().toString().trim());
-        project.setProjectID((int)(projCount == 0? 1 : projCount));
+        project.setProjectPic("project_test"); // Default image for project
         project.setOwnerID(userID);
-        String projectHash = databaseRef.push().getKey();
-        databaseRef.child(projectHash).setValue(project);
+        project.setProjectID((int)(projCount == 0? 1 : projCount));
+        dbUtil.CreateProjectRecord(project);
+        UserProjectRelation relation = new UserProjectRelation();
+        relation.setProjectID((int)(projCount == 0? 1 : projCount));
+        relation.setUserID(userID);
+        String relationHash = relationRef.push().getKey();
+        relationRef.child(relationHash).setValue(relation);
+        Bundle bundle = new Bundle();
+        Navigation.findNavController(getView()).navigate(R.id.nav_home, bundle);
+
     }
+
 
 }
