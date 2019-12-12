@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import tim.hku.comp3330.DataClass.Message;
 import tim.hku.comp3330.DataClass.Project;
 import tim.hku.comp3330.DataClass.User;
+import tim.hku.comp3330.DataClass.UserProjectRelation;
 import tim.hku.comp3330.Database.DB;
 import tim.hku.comp3330.Database.DBUtil;
 import tim.hku.comp3330.ui.home.HomeFragment;
@@ -40,6 +42,7 @@ public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
     DBUtil dbUtil;
     DatabaseReference userRef;
     User user = new User();
+    DatabaseReference relationRef;
     public projectAdapter(Context c, ArrayList<Project> model) {
         this.c = c;
         this.model = model;
@@ -63,18 +66,34 @@ public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
         String userID = prefs.getString("userID","");
         Project proj = model.get(i);
-        if(proj.getOwnerID().equals(userID)){
-            myHolder.join.setVisibility(View.GONE);
-            myHolder.join.setEnabled(false);
-        }
-        else{
-            myHolder.join.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ConstructRequestMessage(userID, proj.getOwnerID(), proj);
+        relationRef = FirebaseDatabase.getInstance().getReference("UserProjectRelation");
+        Query projQuery = relationRef.orderByChild("projectID").equalTo(proj.getProjectID());
+        projQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot child : dataSnapshot.getChildren()){
+                    UserProjectRelation temp = child.getValue(UserProjectRelation.class);
+                    if(temp.getUserID().equals(userID)){
+                        myHolder.join.setVisibility(View.GONE);
+                        myHolder.join.setEnabled(false);
+                    }else{
+                        myHolder.join.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                ConstructRequestMessage(userID, proj.getOwnerID(), proj);
+
+                            }
+                        });
+                    }
                 }
-            });
-        }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         myHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
