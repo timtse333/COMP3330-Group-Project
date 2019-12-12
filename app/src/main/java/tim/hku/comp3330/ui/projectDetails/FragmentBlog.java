@@ -54,7 +54,7 @@ public class FragmentBlog extends Fragment {
         Date currentTime1 = Calendar.getInstance().getTime();
         DateFormat dateFormat1 = android.text.format.DateFormat.getDateFormat(getActivity().getApplicationContext());
         n.setCreated(dateFormat1.format(currentTime1));
-        n.setOwnerID(1);
+        n.setOwnerID("erw"); // need change
         n.setProjectId(1);
         models.add(n);
 
@@ -65,7 +65,7 @@ public class FragmentBlog extends Fragment {
         Date currentTime = Calendar.getInstance().getTime();
         DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity().getApplicationContext());
         m.setCreated(dateFormat.format(currentTime));
-        m.setOwnerID(1);
+        m.setOwnerID(" sdfdsg");  // need change
         m.setProjectId(1);
         models.add(m);
 

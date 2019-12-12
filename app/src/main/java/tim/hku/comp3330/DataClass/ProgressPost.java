@@ -3,7 +3,7 @@ package tim.hku.comp3330.DataClass;
 public class ProgressPost {
     private int ProgressPostID;
     private int projectId;
-    private int ownerID;
+    private String ownerID;
     private String title;
     private String content;
     private String created;
@@ -12,7 +12,7 @@ public class ProgressPost {
         // empty constructor is required
     }
 
-    public ProgressPost(int progressPostID, int projectId, int ownerID, String title, String content, String created) {
+    public ProgressPost(int progressPostID, int projectId, String ownerID, String title, String content, String created) {
         ProgressPostID = progressPostID;
         this.projectId = projectId;
         this.ownerID = ownerID;
@@ -37,11 +37,11 @@ public class ProgressPost {
         this.projectId = projectId;
     }
 
-    public int getOwnerID() {
+    public String getOwnerID() {
         return ownerID;
     }
 
-    public void setOwnerID(int ownerID) {
+    public void setOwnerID(String ownerID) {
         this.ownerID = ownerID;
     }
 
