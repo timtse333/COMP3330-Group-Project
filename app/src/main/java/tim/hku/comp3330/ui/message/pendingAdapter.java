@@ -13,12 +13,14 @@ import java.util.ArrayList;
 import tim.hku.comp3330.DataClass.Message;
 import tim.hku.comp3330.DataClass.Project;
 import tim.hku.comp3330.Database.DB;
+import tim.hku.comp3330.Database.DBUtil;
 import tim.hku.comp3330.R;
 
 public class pendingAdapter extends RecyclerView.Adapter<pendingHolder> {
     Context c;
     ArrayList<Message> model;
     private DB database;
+    private DBUtil dbUtil;
     public pendingAdapter(Context c, ArrayList<Message> model){
         this.c = c;
         this.model = model;
@@ -27,6 +29,7 @@ public class pendingAdapter extends RecyclerView.Adapter<pendingHolder> {
     @Override
     public pendingHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         database = new DB(c);
+        dbUtil = new DBUtil();
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.msg_pending,viewGroup,false);
 
         return new pendingHolder(view);
@@ -45,8 +48,9 @@ public class pendingAdapter extends RecyclerView.Adapter<pendingHolder> {
             public void onClick(View v) {
                 String cancelMsg = "Your request in joining project <" + proj.getProjectName() + "> has been cancelled";
                 msg.setMessageContent(cancelMsg);
-                database.updateMesage(msg);
-                database.SoftDeleteMessages(model.get(i));
+                msg.setReceiverID(msg.getSenderID());
+                msg.setDeleted(true);
+                dbUtil.updateMessage(msg);
             }
         });
     }
