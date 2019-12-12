@@ -59,7 +59,10 @@ public class requestFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(count == 1) {
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
-                        msgList.add(child.getValue(Message.class));
+                        Message msg = child.getValue(Message.class);
+                        if(!msg.isDeleted()){
+                            msgList.add(msg);
+                        }
                     }
                     count++;
                 }
