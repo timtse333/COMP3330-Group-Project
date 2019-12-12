@@ -1,21 +1,21 @@
 package tim.hku.comp3330.DataClass;
 
 public class Message {
-    private int messageID;
+    private String messageID;
     private String messageContent;
-    private int senderID;
-    private int receiverID;
+    private String senderID;
+    private String receiverID;
     private int projID;
     // Assumption: Messages are soft-deleted after acceptance/rejection
     private boolean isDeleted;
 
     public Message(){};
 
-    public int getMessageID() {
+    public String getMessageID() {
         return messageID;
     }
 
-    public void setMessageID(int messageID) {
+    public void setMessageID(String messageID) {
         this.messageID = messageID;
     }
 
@@ -27,19 +27,19 @@ public class Message {
         return messageContent;
     }
 
-    public int getReceiverID() {
+    public String getReceiverID() {
         return receiverID;
     }
 
-    public void setReceiverID(int receiverID) {
+    public void setReceiverID(String receiverID) {
         this.receiverID = receiverID;
     }
 
-    public int getSenderID() {
+    public String getSenderID() {
         return senderID;
     }
 
-    public void setSenderID(int senderID) {
+    public void setSenderID(String senderID) {
         this.senderID = senderID;
     }
 

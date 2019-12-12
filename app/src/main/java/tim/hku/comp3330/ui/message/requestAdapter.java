@@ -52,8 +52,8 @@ public class requestAdapter extends RecyclerView.Adapter<requestHolder> {
             public void onClick(View v) {
                 String rejectMsg = "Your request in joining project <" + proj.getProjectName() + "> has been rejected";
                 msg.setMessageContent(rejectMsg);
-                int receiverID = msg.getReceiverID();
-                int senderID = msg.getSenderID();
+                String receiverID = msg.getReceiverID();
+                String senderID = msg.getSenderID();
                 msg.setReceiverID(senderID);//Send the rejected msg back to sender
                 msg.setSenderID(receiverID);
                 database.updateMesage(msg);

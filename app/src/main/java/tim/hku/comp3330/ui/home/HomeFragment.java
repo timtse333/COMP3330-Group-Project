@@ -38,7 +38,7 @@ public class HomeFragment extends Fragment {
     RecyclerView myRecycleriew;
     projectAdapter myAdapter;
     DB database;
-    private long projCount = 0;
+    private int count = 1;
     private DatabaseReference databaseRef;
     ArrayList<DataSnapshot> itemList = new ArrayList<>();
     ArrayList<Project>projList = new ArrayList<>();
@@ -60,7 +60,10 @@ public class HomeFragment extends Fragment {
                     itemList.add(proj);
 
                 }
-                projList = getMyList();
+                if(count == 1) {
+                    projList = getMyList();
+                    count ++;
+                }
                 myAdapter = new projectAdapter(getActivity(),projList);
                 myRecycleriew.setAdapter(myAdapter);
             }
@@ -78,8 +81,6 @@ public class HomeFragment extends Fragment {
 
         myRecycleriew.setLayoutManager(new LinearLayoutManager(getActivity()));
         get_proj_from_db();
-        myAdapter = new projectAdapter(getActivity(),projList);
-        myRecycleriew.setAdapter(myAdapter);
 
 
         return rootView;
