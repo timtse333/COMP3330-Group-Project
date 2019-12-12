@@ -207,7 +207,7 @@ public class PostBlogFragment extends Fragment {
             public void onChildAdded(DataSnapshot dataSnapshot, String preChildKey) {
                 Log.d("myTag", "getting from firebase");
                 Project project = new Project();
-                project.setOwnerID(dataSnapshot.child("ownerID").getValue(int.class));
+                project.setOwnerID(dataSnapshot.child("ownerID").getValue(String.class));
                 project.setProjectID(dataSnapshot.child("projectID").getValue(int.class));
                 project.setProjectDescription(dataSnapshot.child("projectDescription").getValue().toString());
                 project.setProjectName(dataSnapshot.child("projectName").getValue().toString());

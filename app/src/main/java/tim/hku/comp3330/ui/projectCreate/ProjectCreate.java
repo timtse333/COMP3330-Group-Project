@@ -45,7 +45,7 @@ public class ProjectCreate extends Fragment {
     private TextWatcher checkPost;
     private DatabaseReference databaseRef;
     private int count;
-
+    private long projCount = 0;
     public ProjectCreate() {
     }
 
@@ -53,6 +53,7 @@ public class ProjectCreate extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_project_create, container, false);
+        get_data_from_db();
         checkPost = new TextWatcher(){
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -103,7 +104,24 @@ public class ProjectCreate extends Fragment {
 
         return rootView;
     }
+    private void get_data_from_db(){
+        databaseRef = FirebaseDatabase.getInstance().getReference("Projects");
+        databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    projCount = dataSnapshot.getChildrenCount() + 1;
+                }
+                else{
+                    projCount += 1;
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
+    }
     private Boolean checkReadiness() {
             if (!name.getText().toString().matches("")) {
                 if(!description.getText().toString().matches("")){
@@ -131,10 +149,10 @@ public class ProjectCreate extends Fragment {
             }
         });
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        int userID = prefs.getInt("userID",1);
+        String userID = prefs.getString("userID","");
         project.setProjectName(name.getText().toString().trim());
         project.setProjectDescription(description.getText().toString().trim());
-        project.setProjectID(count+1);
+        project.setProjectID((int)(projCount == 0? 1 : projCount));
         project.setOwnerID(userID);
         String projectHash = databaseRef.push().getKey();
         databaseRef.child(projectHash).setValue(project);
