@@ -33,6 +33,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -283,23 +284,31 @@ public class PostBlogFragment extends Fragment {
                                 progressBar.setProgress(0);
                             }
                         },500);
-                        int postId = count + 1;
-                        BlogPicture picture = new BlogPicture(postId,taskSnapshot.getUploadSessionUri().toString());
-                        String pictureId = databaseRef.push().getKey();
-                        databaseRef.child(pictureId).setValue(picture);
-                        Project project = (Project) projectList.getSelectedItem();
-                        blog.setContent(content.getText().toString().trim());
-                        blog.setProjectId(project.getProjectID());
-                        blog.setBlogPostID(postId);
-                        blog.setOwnerID(ownerID);
-                        blog.setCreated(DateFormat.getDateTimeInstance().format(new Date()));
-                        if(imageUri != null){
-                            blog.setBlogPostPic("True");
+                        if (taskSnapshot.getMetadata() != null) {
+                            if (taskSnapshot.getMetadata().getReference() != null) {
+                                Task<Uri> result = taskSnapshot.getStorage().getDownloadUrl();
+                                result.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        String imageUrl = uri.toString();
+                                        int postId = count + 1;
+                                        Project project = (Project) projectList.getSelectedItem();
+                                        blog.setContent(content.getText().toString().trim());
+                                        blog.setProjectId(project.getProjectID());
+                                        blog.setBlogPostID(postId);
+                                        blog.setOwnerID(ownerID);
+                                        blog.setCreated(DateFormat.getDateTimeInstance().format(new Date()));
+                                        blog.setBlogPostPic(imageUrl);
+                                        String blogHash = blogRef.push().getKey();
+                                        blogRef.child(blogHash).setValue(blog);
+                                        Bundle bundle = new Bundle();
+                                        Navigation.findNavController(getView()).navigate(R.id.nav_home, bundle);
+                                        //createNewPost(imageUrl);
+                                    }
+                                });
+                            }
                         }
-                        String blogHash = blogRef.push().getKey();
-                        blogRef.child(blogHash).setValue(blog);
-                        Bundle bundle = new Bundle();
-                        Navigation.findNavController(getView()).navigate(R.id.nav_home, bundle);
+
 
                     }
                 })
