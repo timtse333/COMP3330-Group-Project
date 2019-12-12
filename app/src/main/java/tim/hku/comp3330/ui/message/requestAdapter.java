@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -79,6 +80,7 @@ public class requestAdapter extends RecyclerView.Adapter<requestHolder> {
                         msg.setSenderID(receiverID);
                         msg.setDeleted(true);
                         dbUtil.updateMessage(msg);
+                        Navigation.findNavController(v).navigate(R.id.nav_message);
                     }
 
                     @Override
@@ -107,6 +109,7 @@ public class requestAdapter extends RecyclerView.Adapter<requestHolder> {
                         msg.setSenderID(receiverID);
                         msg.setDeleted(true);
                         dbUtil.updateMessage(msg);
+                        Navigation.findNavController(v).navigate(R.id.nav_message);
                     }
 
                     @Override

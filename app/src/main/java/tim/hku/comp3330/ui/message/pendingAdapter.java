@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -51,6 +52,7 @@ public class pendingAdapter extends RecyclerView.Adapter<pendingHolder> {
                 msg.setReceiverID(msg.getSenderID());
                 msg.setDeleted(true);
                 dbUtil.updateMessage(msg);
+                Navigation.findNavController(v).navigate(R.id.nav_message);
             }
         });
     }
