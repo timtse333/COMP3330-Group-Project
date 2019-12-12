@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".ui.post.PostProgressFragment">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorBackground"
+        >
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/topBar"
+            >
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:padding="5dp"
+                android:id="@+id/cancelBtn"
+                android:text="Cancel"
+                android:textStyle="bold"
+                android:textColor="#1AA7D6"
+                android:textSize="20dp">
+            </TextView>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"></View>
+
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:text="CREATE"
+                android:alpha="0.2"
+                android:textColor="#FFF"
+                android:background="@drawable/roundedbutton_effect"
+                android:id="@+id/createBtn"></Button>
+
+
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:padding="10dp"
+            android:src="@drawable/test"
+            app:civ_border_width="2dp"
+            app:civ_border_color="@color/colorBackground"
+            android:layout_below="@id/topBar"
+            android:id="@+id/user_image"/>
+
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/user_image"
+            android:layout_toEndOf="@id/user_image"
+            android:layout_below="@id/topBar"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_toEndOf="@id/user_image"
+                >
+
+
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:textColor="#E6E2E2"
+                    android:textColorHint="#E6E2E2"
+                    android:hint="Project Name"
+                    android:paddingTop="25dp"
+                    android:id="@+id/name"
+                    >
+                </EditText>
+
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:inputType="text|textMultiLine"
+                    android:textColor="#E6E2E2"
+                    android:textColorHint="#E6E2E2"
+                    android:hint="Project description (including number of member needed and languages)"
+                    android:gravity="top|left"
+                    android:id="@+id/description"/>
+
+            </LinearLayout>
+
+
+        </androidx.core.widget.NestedScrollView>
+    </RelativeLayout>
+
+</androidx.appcompat.widget.LinearLayoutCompat>
