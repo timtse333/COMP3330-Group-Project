@@ -44,7 +44,7 @@ public class projectCreation extends AppCompatActivity {
         createBtn.setOnClickListener(new AppCompatButton.OnClickListener() {
             public void onClick(View view){
                 get_data_from_db();
-                postDataToSQLite();
+                postDataToDB();
             }
         }
     );
@@ -82,7 +82,7 @@ public class projectCreation extends AppCompatActivity {
         dbUtil = new DBUtil();
     }
 
-    private void postDataToSQLite() {
+    private void postDataToDB() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String userID = prefs.getString("userID","");
         project.setProjectName(projectName.getText().toString().trim());
