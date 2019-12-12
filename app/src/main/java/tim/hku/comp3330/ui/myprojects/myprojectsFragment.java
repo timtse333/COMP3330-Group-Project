@@ -35,6 +35,7 @@ public class myprojectsFragment extends Fragment {
     myProjectsAdapter projAdapter;
     DB database;
     private DatabaseReference databaseRef;
+    private int count = 1;
     private DatabaseReference proj;
     private ArrayList<Integer>projIDList = new ArrayList<>();
     private ArrayList<Project>projList = new ArrayList<>();
@@ -74,10 +75,13 @@ public class myprojectsFragment extends Fragment {
             projQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for(DataSnapshot test: dataSnapshot.getChildren()) {
-                        projList.add(test.getValue(Project.class));
-                        projAdapter = new myProjectsAdapter(getActivity().getApplicationContext(), projList);
-                        myRecycleriew.setAdapter(projAdapter);
+                    if(count == 1) {
+                        for (DataSnapshot test : dataSnapshot.getChildren()) {
+                            projList.add(test.getValue(Project.class));
+                            projAdapter = new myProjectsAdapter(getActivity().getApplicationContext(), projList);
+                            myRecycleriew.setAdapter(projAdapter);
+                        }
+                        count++;
                     }
                 }
 
