@@ -81,7 +81,8 @@ public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
                             @Override
                             public void onClick(View v) {
                                 ConstructRequestMessage(userID, proj.getOwnerID(), proj);
-
+                                myHolder.join.setVisibility(View.GONE);
+                                myHolder.join.setEnabled(false);
                             }
                         });
                     }
