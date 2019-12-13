@@ -8,6 +8,7 @@ public class User {
     // private Bitmap userIcon;
     private String loginName;
     private String password;
+    private String icon;
     public User() {}
     public User(String userID, String userName, String loginName, String password/*, Bitmap userIcon*/) {
         this.userID = userID;
@@ -16,6 +17,15 @@ public class User {
         this.password = password;
         //this.userIcon = userIcon;
     }
+
+    public User(String userID, String userName, String loginName, String password, String icon) {
+        this.userID = userID;
+        this.userName = userName;
+        this.loginName = loginName;
+        this.password = password;
+        this.icon = icon;
+    }
+
     // getters and setters
     public String getUserID() {
         return userID;
@@ -44,6 +54,13 @@ public class User {
     /*public void setUserIcon(Bitmap userIcon) {
         this.userIcon = userIcon;
     }*/
+    public String getIcon() {
+        return this.icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
 
     public void setUserID(String userID) {
         this.userID = userID;

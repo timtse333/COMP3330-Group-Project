@@ -53,10 +53,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import tim.hku.comp3330.DataClass.BlogPicture;
 import tim.hku.comp3330.DataClass.BlogPost;
 import tim.hku.comp3330.DataClass.ProgressPost;
 import tim.hku.comp3330.DataClass.Project;
+import tim.hku.comp3330.DataClass.User;
 import tim.hku.comp3330.Database.DB;
 import tim.hku.comp3330.R;
 
@@ -73,11 +75,12 @@ public class PostBlogFragment extends Fragment {
     private Button pictureBtn;
     private Spinner projectList;
     private TextView cancelBtn;
-    private DB database;
+    private CircleImageView icon;
     private EditText content;
     private ImageView uploaded;
     private ProgressBar progressBar;
     private BlogPost blog;
+    private User poster;
     private int count;
     private String ownerID;
     private ArrayAdapter<Project> adapter;
@@ -88,6 +91,7 @@ public class PostBlogFragment extends Fragment {
     private DatabaseReference blogRef;
     private DatabaseReference projectRef;
     private DatabaseReference relationRef;
+    private DatabaseReference userRef;
 
     private Uri imageUri;
 
@@ -132,19 +136,27 @@ public class PostBlogFragment extends Fragment {
         content = (EditText) rootView.findViewById(R.id.content);
         uploaded = (ImageView) rootView.findViewById(R.id.uploadImage);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
-
+        icon = (CircleImageView) rootView.findViewById(R.id.user_image);
+        postBtn.setEnabled(false);
         content.addTextChangedListener(checkPost);
         count = 0;
         blog = new BlogPost();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         ownerID = prefs.getString("userID","no");
         Log.d("myTag", "The owner id is "+ownerID);
+        setUserImage();
 
         storageRef = FirebaseStorage.getInstance().getReference("blogPics");
         databaseRef = FirebaseDatabase.getInstance().getReference("blogPics");
         blogRef = FirebaseDatabase.getInstance().getReference("BlogPost");
         projectRef = FirebaseDatabase.getInstance().getReference("Projects");
         relationRef = FirebaseDatabase.getInstance().getReference("UserProjectRelation");
+        cancelBtn.setOnClickListener(new TextView.OnClickListener(){
+            public void onClick(View view){
+                Bundle bundle = new Bundle();
+                Navigation.findNavController(view).navigate(R.id.nav_home,bundle);
+            }
+        });
 
         getNewBlogId();
         pictureBtn.setOnClickListener(new View.OnClickListener() {
@@ -272,6 +284,8 @@ public class PostBlogFragment extends Fragment {
     }
 
     private void uploadFile() {
+        postBtn.setEnabled(false);
+        postBtn.setAlpha((float)(0.2));
         StorageReference fileReference = storageRef.child(System.currentTimeMillis()+"."+getFileExtension(imageUri));
         fileReference.putFile(imageUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -340,6 +354,9 @@ public class PostBlogFragment extends Fragment {
 
     private void postBlog() {
 
+        postBtn.setEnabled(false);
+        postBtn.setAlpha((float)(0.2));
+
         Project project = (Project) projectList.getSelectedItem();
         blog.setContent(content.getText().toString().trim());
         blog.setProjectId(project.getProjectID());
@@ -367,5 +384,30 @@ public class PostBlogFragment extends Fragment {
         else {
             return false;
         }
+    }
+
+    private void setUserImage() {
+        userRef = FirebaseDatabase.getInstance().getReference("Users");
+        userRef.orderByChild("userID").equalTo(ownerID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot postSnapShot: dataSnapshot.getChildren()){
+                    poster = postSnapShot.getValue(User.class);
+                }
+                if (poster.getIcon() != null) {
+                    Picasso.with(getContext())
+                            .load(poster.getIcon())
+                            .fit()
+                            .centerCrop()
+                            .into(icon);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }
