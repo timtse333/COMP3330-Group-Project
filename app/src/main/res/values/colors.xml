@@ -7,5 +7,5 @@
     <color name="colorText">#FFFFFF</color>
     <color name="colorTextHint">#51d8c7</color>
     <color name="tabtextcolor">#FFF</color>
-    <color name="tabindicatorcolor">#2d2d2d</color>
+    <color name="tabindicatorcolor">#2D2D2D</color>
 </resources>
