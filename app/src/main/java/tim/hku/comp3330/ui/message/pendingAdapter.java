@@ -11,10 +11,19 @@ import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 import tim.hku.comp3330.DataClass.Message;
 import tim.hku.comp3330.DataClass.Project;
+import tim.hku.comp3330.DataClass.User;
 import tim.hku.comp3330.Database.DB;
 import tim.hku.comp3330.Database.DBUtil;
 import tim.hku.comp3330.R;
@@ -24,6 +33,8 @@ public class pendingAdapter extends RecyclerView.Adapter<pendingHolder> {
     ArrayList<Message> model;
     private DB database;
     private DBUtil dbUtil;
+    private DatabaseReference userRef;
+    private User user;
     public pendingAdapter(Context c, ArrayList<Message> model){
         this.c = c;
         this.model = model;
@@ -43,8 +54,31 @@ public class pendingAdapter extends RecyclerView.Adapter<pendingHolder> {
         Message msg = model.get(i);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
         String userName = prefs.getString("userName","");
+        String senderID = prefs.getString("userID","no");
         myHolder.username.setText(userName);
         myHolder.content.setText(msg.getMessageContent());
+        userRef = FirebaseDatabase.getInstance().getReference("Users");
+        Query userQuery = userRef.orderByChild("userID").equalTo(senderID).limitToFirst(1);
+        userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot child: dataSnapshot.getChildren()) {
+                    user= child.getValue(User.class);
+                    if(user.getIcon()!= null){
+                        Picasso.with(c)
+                                .load(user.getIcon())
+                                .fit()
+                                .centerCrop()
+                                .into(myHolder.profile);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         int proPic = myHolder.itemView.getContext().getResources().getIdentifier("test","drawable","tim.hku.comp3330");
         myHolder.profile.setImageResource(proPic);
         Project proj = database.GetProject(msg.getProjID());

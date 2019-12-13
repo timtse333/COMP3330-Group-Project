@@ -17,6 +17,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -67,6 +68,13 @@ public class requestAdapter extends RecyclerView.Adapter<requestHolder> {
                 for(DataSnapshot child: dataSnapshot.getChildren()) {
                     user= child.getValue(User.class);
                     myHolder.username.setText(user.getUserName());
+                    if(user.getIcon()!= null){
+                        Picasso.with(c)
+                                .load(user.getIcon())
+                                .fit()
+                                .centerCrop()
+                                .into(myHolder.profile);
+                    }
                 }
             }
 
