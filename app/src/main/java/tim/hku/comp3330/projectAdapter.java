@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -63,8 +64,17 @@ public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
     public void onBindViewHolder(@NonNull projectHolder myHolder, int i) {
         myHolder.mTitle.setText(model.get(i).getProjectName());
         myHolder.mDes.setText(model.get(i).getProjectDescription());
-        int img = myHolder.itemView.getContext().getResources().getIdentifier(model.get(i).getProjectPic(),"drawable","tim.hku.comp3330");
-        myHolder.mImageView.setImageResource(img);
+        if(!model.get(i).getProjectPic().equals("project_test")){
+            Picasso.with(c)
+                    .load(model.get(i).getProjectPic())
+                    .fit()
+                    .centerCrop()
+                    .into(myHolder.mImageView);
+        }
+        else {
+            int img = myHolder.itemView.getContext().getResources().getIdentifier(model.get(i).getProjectPic(),"drawable","tim.hku.comp3330");
+            myHolder.mImageView.setImageResource(img);
+        }
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
         String userID = prefs.getString("userID","");
         Project proj = model.get(i);
