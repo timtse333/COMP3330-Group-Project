@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_myprojects, R.id.nav_message, R.id.nav_login, R.id.nav_registration,R.id.nav_project_test,R.id.nav_logout, R.id.nav_post_blog, R.id.nav_post_progress)
+                R.id.nav_home,R.id.nav_edit_profile, R.id.nav_myprojects, R.id.nav_message, R.id.nav_login, R.id.nav_registration,R.id.nav_project_test,R.id.nav_logout, R.id.nav_post_blog, R.id.nav_post_progress)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                 }
+
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
