@@ -11,6 +11,7 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
@@ -34,6 +35,7 @@ import tim.hku.comp3330.DataClass.Project;
 import tim.hku.comp3330.DataClass.User;
 import tim.hku.comp3330.Database.DB;
 import tim.hku.comp3330.R;
+import tim.hku.comp3330.ui.login.LoginFragment;
 
 
 public class RegisterFragment extends Fragment {
@@ -75,6 +77,7 @@ public class RegisterFragment extends Fragment {
         TextInputLayout textInputLayoutConfirm= view.findViewById(R.id.textInputLayoutConfirmPassword);
         TextInputLayout textInputLayoutPW= view.findViewById(R.id.textInputLayoutPassword);
         NestedScrollView nestedScrollView = view.findViewById(R.id.nestedScrollView);
+        AppCompatTextView loginLink = view.findViewById(R.id.appCompatTextViewLoginLink);
         class Util{
             private void postDataToSQLite() {
                 if (!inputValidation.isInputEditTextFilled(loginEditText, textInputLayoutLogin, getString(R.string.error_message_name))) {
@@ -172,6 +175,13 @@ public class RegisterFragment extends Fragment {
                     }
                 });
                 new Util().postDataToSQLite();
+            }
+        });
+        loginLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavController nav = NavHostFragment.findNavController(RegisterFragment.this);
+                nav.navigate(R.id.nav_login );
             }
         });
     }
