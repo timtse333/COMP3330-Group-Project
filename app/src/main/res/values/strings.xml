@@ -16,7 +16,7 @@
     <string name="menu_registration">Register</string>
     <string name="menu_post_progress">Post Project Progress</string>
 
-    <!--Login attributes -->
+    <!--login attributes -->
     <string name="text_accounts">All Accounts</string>
     <string name="hint_name">Login Name</string>
     <string name="hint_email">Email</string>
