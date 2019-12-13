@@ -8,12 +8,13 @@
     <string name="action_settings">Settings</string>
 
     <string name="menu_home">Home</string>
-    <string name="menu_myprojects">myProjcets</string>
+    <string name="menu_myprojects">My Projcets</string>
+    <string name="menu_project_details">Project Details</string>
     <string name="menu_message">Messages</string>
-    <string name="menu_tools">Tools</string>
+    <string name="menu_post_blog">Post Project Blog</string>
     <string name="menu_login">Login</string>
     <string name="menu_registration">Register</string>
-    <string name="menu_projectTest">ProjectTest</string>
+    <string name="menu_post_progress">Post Project Progress</string>
 
     <!--Login attributes -->
     <string name="text_accounts">All Accounts</string>

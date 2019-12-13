@@ -8,11 +8,10 @@
     android:orientation="vertical">
 
 
-
     <ImageView
         android:id="@+id/banner"
         android:layout_width="match_parent"
-        android:layout_height="192dp"
+        android:layout_height="112dp"
         android:scaleType="fitXY"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"

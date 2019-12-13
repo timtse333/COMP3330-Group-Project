@@ -5,14 +5,14 @@
     android:id="@+id/SplashScreen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#2196F3"
+    android:background="@color/colorBackground"
     tools:context=".SplashScreen">
 
     <ImageView
         android:id="@+id/Splash"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/test"
+        android:background="@drawable/applogo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

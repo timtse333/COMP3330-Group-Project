@@ -44,7 +44,7 @@
     <fragment
         android:id="@+id/nav_project_test"
         android:name="tim.hku.comp3330.ui.projectDetails.projectDetail"
-        android:label="@string/menu_projectTest"
+        android:label="@string/menu_project_details"
         tools:layout="@layout/fragment_project_detail" />
 
     <fragment
