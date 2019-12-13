@@ -1,6 +1,8 @@
 package tim.hku.comp3330.ui.message;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +41,9 @@ public class pendingAdapter extends RecyclerView.Adapter<pendingHolder> {
     @Override
     public void onBindViewHolder(@NonNull pendingHolder myHolder, int i) {
         Message msg = model.get(i);
-        myHolder.username.setText("Kaori");
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+        String userName = prefs.getString("userName","");
+        myHolder.username.setText(userName);
         myHolder.content.setText(msg.getMessageContent());
         int proPic = myHolder.itemView.getContext().getResources().getIdentifier("test","drawable","tim.hku.comp3330");
         myHolder.profile.setImageResource(proPic);

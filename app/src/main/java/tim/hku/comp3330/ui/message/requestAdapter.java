@@ -1,6 +1,8 @@
 package tim.hku.comp3330.ui.message;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,9 +34,10 @@ public class requestAdapter extends RecyclerView.Adapter<requestHolder> {
     ArrayList<Message> model;
     private DB database;
     private DBUtil dbUtil;
-    private DatabaseReference associatonRef;
     private DatabaseReference projRef;
+    private DatabaseReference userRef;
     private Project proj = new Project();
+    private User user = new User();
     private UserProjectRelation relation = new UserProjectRelation();
     public requestAdapter(Context c, ArrayList<Message> model){
         this.c = c;
@@ -53,7 +56,25 @@ public class requestAdapter extends RecyclerView.Adapter<requestHolder> {
     @Override
     public void onBindViewHolder(@NonNull requestHolder myHolder, int i) {
         Message msg = model.get(i);
-        myHolder.username.setText("Kaori");
+        String receiverID = msg.getReceiverID();
+        String senderID = msg.getSenderID();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+        userRef =FirebaseDatabase.getInstance().getReference("Users");
+        Query userQuery = userRef.orderByChild("userID").equalTo(senderID).limitToFirst(1);
+        userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot child: dataSnapshot.getChildren()) {
+                    user= child.getValue(User.class);
+                    myHolder.username.setText(user.getUserName());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         myHolder.content.setText(msg.getMessageContent());
         int proPic = myHolder.itemView.getContext().getResources().getIdentifier("test","drawable","tim.hku.comp3330");
         myHolder.profile.setImageResource(proPic);
@@ -71,8 +92,6 @@ public class requestAdapter extends RecyclerView.Adapter<requestHolder> {
                         }
                         String accepttMsg = "Your request in joining project <" + proj.getProjectName() + "> has been accepted";
                         msg.setMessageContent(accepttMsg);
-                        String receiverID = msg.getReceiverID();
-                        String senderID = msg.getSenderID();
                         relation.setProjectID(proj.getProjectID());
                         relation.setUserID(senderID);
                         dbUtil.CreateRelation(relation);
@@ -120,7 +139,6 @@ public class requestAdapter extends RecyclerView.Adapter<requestHolder> {
             }
         });
     }
-
     @Override
     public int getItemCount() {
         return model.size();

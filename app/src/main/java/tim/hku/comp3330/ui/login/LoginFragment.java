@@ -32,6 +32,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import tim.hku.comp3330.Account.InputValidation;
+import tim.hku.comp3330.DataClass.User;
 import tim.hku.comp3330.Database.DB;
 import tim.hku.comp3330.MainActivity;
 import tim.hku.comp3330.R;
@@ -43,6 +44,7 @@ public class LoginFragment extends Fragment{
     private InputValidation inputValidation;
     private Boolean userExists = false;
     private String userId;
+    private String userName;
     private DatabaseReference databaseRef;
     @Override
     public void onAttach(@NonNull Context context) {
@@ -89,6 +91,7 @@ public class LoginFragment extends Fragment{
                         SharedPreferences.Editor editor = prefs.edit();
                         editor.putBoolean("IsLogin",true);
                         editor.putString("userID",userId);
+                        editor.putString("userName",userName);
                         editor.apply();
                         /*NavController nav = NavHostFragment.findNavController(LoginFragment.this);
                         nav.navigate(R.id.nav_myprojects );*/
@@ -124,7 +127,11 @@ public class LoginFragment extends Fragment{
                             userExists = true;
                             //TODO:Fetch userId from DB
                             for(DataSnapshot child : dataSnapshot.getChildren()){
-                                userId = child.getKey();
+                                User user = new User();
+                                user = child.getValue(User.class);
+                                userId = user.getUserID();
+                                userName = user.getUserName();
+
                             }
                         }
                     }
