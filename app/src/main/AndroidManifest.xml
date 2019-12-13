@@ -15,8 +15,6 @@
         </activity>
          <activity android:name=".projectList">
          </activity>
-        <activity android:name=".Account.Login" />
-        <activity android:name=".Account.Registration" />
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">

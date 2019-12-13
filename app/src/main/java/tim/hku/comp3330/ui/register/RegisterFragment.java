@@ -109,7 +109,7 @@ public class RegisterFragment extends Fragment {
             private void emptyInputEditText() {
                 loginEditText.setText(null);
                 pwEditText.setText(null);
-
+                confirmEditText.setText(null);
             }
         }
         loginEditText.addTextChangedListener(new TextWatcher() {
