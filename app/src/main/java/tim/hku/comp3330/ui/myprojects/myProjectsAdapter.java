@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 import tim.hku.comp3330.DataClass.BlogPost;
@@ -38,8 +40,18 @@ public class myProjectsAdapter extends RecyclerView.Adapter<myProjectsHolder> {
 
         myHolder.mTitle.setText(model.get(i).getProjectName());
         myHolder.mDes.setText(model.get(i).getProjectDescription());
-        int img = myHolder.itemView.getContext().getResources().getIdentifier(model.get(i).getProjectPic(),"drawable","tim.hku.comp3330");
-        myHolder.mImageView.setImageResource(img);
+
+        if(!model.get(i).getProjectPic().equals("project_test")){
+            Picasso.with(c)
+                    .load(model.get(i).getProjectPic())
+                    .fit()
+                    .centerCrop()
+                    .into(myHolder.mImageView);
+        }
+        else {
+            int img = myHolder.itemView.getContext().getResources().getIdentifier(model.get(i).getProjectPic(),"drawable","tim.hku.comp3330");
+            myHolder.mImageView.setImageResource(img);
+        }
         int projID = model.get(i).getProjectID();
         myHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
