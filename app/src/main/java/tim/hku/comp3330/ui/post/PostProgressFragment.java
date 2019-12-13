@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
@@ -38,8 +39,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import tim.hku.comp3330.DataClass.ProgressPost;
 import tim.hku.comp3330.DataClass.Project;
+import tim.hku.comp3330.DataClass.User;
 import tim.hku.comp3330.Database.DB;
 import tim.hku.comp3330.R;
 
@@ -53,12 +56,13 @@ public class PostProgressFragment extends Fragment {
     private ProgressPost post;
     private EditText topic;
     private EditText content;
+    private CircleImageView icon;
     private TextWatcher checkPost;
-    private StorageReference storageRef;
-    private DatabaseReference databaseRef;
+    private User poster;
     private DatabaseReference progressRef;
     private DatabaseReference projectRef;
     private DatabaseReference relationRef;
+    private DatabaseReference userRef;
     ArrayAdapter<Project> adapter;
     private String ownerID;
     private int count;
@@ -108,6 +112,8 @@ public class PostProgressFragment extends Fragment {
         topic.addTextChangedListener(checkPost);
         content = (EditText)rootView.findViewById(R.id.content);
         content.addTextChangedListener(checkPost);
+        icon = rootView.findViewById(R.id.user_image);
+        setUserImage();
         post = new ProgressPost();
         database = new DB(getActivity());
         projectList = (Spinner) rootView.findViewById(R.id.project);
@@ -133,21 +139,29 @@ public class PostProgressFragment extends Fragment {
         return rootView;
     }
 
-    private void postDataToSQLite() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        int userID = prefs.getInt("userID",1);
-        Project project = (Project) projectList.getSelectedItem();
-        post.setTitle(topic.getText().toString().trim());
-        post.setContent(content.getText().toString().trim());
-        post.setProjectId(project.getProjectID());
-        post.setOwnerID(ownerID);
-        Date currentTime = Calendar.getInstance().getTime();
-        DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity().getApplicationContext());
-        post.setCreated(dateFormat.format(currentTime));
-        database.CreateNewPost(post);
-        //Log.d("myTag", "The project id is "+project.getProjectID());
+    private void setUserImage() {
+        userRef = FirebaseDatabase.getInstance().getReference("Users");
+        userRef.orderByChild("userID").equalTo(ownerID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot postSnapShot: dataSnapshot.getChildren()){
+                    poster = postSnapShot.getValue(User.class);
+                }
+                if (poster.getIcon() != null) {
+                    Picasso.with(getContext())
+                            .load(poster.getIcon())
+                            .fit()
+                            .centerCrop()
+                            .into(icon);
+                }
 
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
 
@@ -241,6 +255,9 @@ public class PostProgressFragment extends Fragment {
     }
 
     private void postProgress() {
+
+       postBtn.setAlpha((float)0.2);
+       postBtn.setEnabled(false);
 
         Project project = (Project) projectList.getSelectedItem();
         post.setTitle(topic.getText().toString().trim());

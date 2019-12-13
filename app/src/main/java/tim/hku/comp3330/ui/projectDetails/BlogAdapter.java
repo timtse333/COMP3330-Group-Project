@@ -61,6 +61,13 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogHolder> {
                             .fit()
                             .centerCrop()
                             .into(myHolder.postPic);
+                    if(poster.getIcon() != null) {
+                        Picasso.with(c)
+                                .load(poster.getIcon())
+                                .fit()
+                                .centerCrop()
+                                .into(myHolder.profile);
+                    }
                 }
                 else {
                     myHolder.postPic.getLayoutParams().height = 0;
@@ -68,6 +75,13 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogHolder> {
                     myHolder.username.setText(poster.getUserName());
                     myHolder.content.setText(model.get(i).getContent());
                     myHolder.mDate.setText(model.get(i).getCreated());
+                    if(poster.getIcon() != null) {
+                        Picasso.with(c)
+                                .load(poster.getIcon())
+                                .fit()
+                                .centerCrop()
+                                .into(myHolder.profile);
+                    }
 
 
                 }
