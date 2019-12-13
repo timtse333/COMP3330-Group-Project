@@ -75,14 +75,11 @@ public class myprojectsFragment extends Fragment {
             projQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(count == 1) {
                         for (DataSnapshot test : dataSnapshot.getChildren()) {
                             projList.add(test.getValue(Project.class));
                             projAdapter = new myProjectsAdapter(getActivity().getApplicationContext(), projList);
                             myRecycleriew.setAdapter(projAdapter);
                         }
-                        count++;
-                    }
                 }
 
                 @Override
