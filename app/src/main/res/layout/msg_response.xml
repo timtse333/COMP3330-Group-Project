@@ -53,17 +53,6 @@
             android:textColor="#a9a9a9"
             android:textSize="18sp"></TextView>
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/resmsg_proj_img"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_below="@id/resmsg_msgContent"
-            android:layout_marginTop="10dp"
-            android:layout_toEndOf="@id/resmsg_user_icon"
-            android:padding="10dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/project_test" />
-
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

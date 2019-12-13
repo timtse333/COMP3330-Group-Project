@@ -73,8 +73,6 @@ public class responseAdapter  extends RecyclerView.Adapter<responseHolder>{
             }
         });
         myHolder.content.setText(model.get(i).getMessageContent());
-        int proPic = myHolder.itemView.getContext().getResources().getIdentifier("test","drawable","tim.hku.comp3330");
-        myHolder.profile.setImageResource(proPic);
 
     }
     @Override

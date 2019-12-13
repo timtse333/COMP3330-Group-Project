@@ -53,22 +53,11 @@
             android:textColor="#a9a9a9"
             android:textSize="18sp"></TextView>
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/pendingmsg_proj_img"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_below="@id/pendingmsg_msgContent"
-            android:layout_marginTop="10dp"
-            android:layout_toEndOf="@id/pendingmsg_user_icon"
-            android:padding="10dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/project_test" />
-
         <Button
             android:id="@+id/pendingmsg_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/pendingmsg_proj_img"
+            android:layout_below="@id/pendingmsg_msgContent"
             android:layout_toEndOf="@id/pendingmsg_user_icon"
             android:text="Cancel" />
 

@@ -79,8 +79,6 @@ public class pendingAdapter extends RecyclerView.Adapter<pendingHolder> {
 
             }
         });
-        int proPic = myHolder.itemView.getContext().getResources().getIdentifier("test","drawable","tim.hku.comp3330");
-        myHolder.profile.setImageResource(proPic);
         Project proj = database.GetProject(msg.getProjID());
         myHolder.cancel.setOnClickListener(new View.OnClickListener() {
             @Override
