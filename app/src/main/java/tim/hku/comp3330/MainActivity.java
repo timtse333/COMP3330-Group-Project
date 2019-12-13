@@ -4,18 +4,26 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import com.google.android.material.circularreveal.cardview.CircularRevealCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -23,14 +31,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+import tim.hku.comp3330.DataClass.User;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private AppBarConfiguration mAppBarConfigurationBeforeLogin;
+    private DatabaseReference userRef;
+    private User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userRef = FirebaseDatabase.getInstance().getReference("Users");
         setContentView(R.layout.activity_main);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Boolean logined = prefs.getBoolean("IsLogin",false);
@@ -48,6 +65,37 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
         if(logined){
+            View headerView = navigationView.getHeaderView(0);
+            CircleImageView image =  (CircleImageView)headerView.findViewById(R.id.imageView);
+            TextView username = (TextView) headerView.findViewById(R.id.username);
+            String userID = prefs.getString("userID","");
+            userRef.orderByChild("userID").equalTo(userID).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(DataSnapshot postSnapShot: dataSnapshot.getChildren()){
+                        user = postSnapShot.getValue(User.class);
+                    }
+                    if (user.getIcon() != null) {
+                        Picasso.with(getApplicationContext())
+                                .load(user.getIcon())
+                                .fit()
+                                .centerCrop()
+                                .into(image);
+                        username.setText(user.getUserName());
+                    }
+                    else {
+                        int img = getResources().getIdentifier("test","drawable","tim.hku.comp3330");
+                        image.setImageResource(img);
+                        username.setText(user.getUserName());
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
             MenuItem accountMenu = navigationView.getMenu().findItem(R.id.AccountMenu);
             accountMenu.getSubMenu().findItem(R.id.nav_login).setVisible(false);
             accountMenu.getSubMenu().findItem(R.id.nav_login).setEnabled(false);
