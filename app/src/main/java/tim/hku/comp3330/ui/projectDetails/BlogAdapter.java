@@ -1,6 +1,7 @@
 package tim.hku.comp3330.ui.projectDetails;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +20,14 @@ import java.util.ArrayList;
 
 import tim.hku.comp3330.DataClass.BlogPicture;
 import tim.hku.comp3330.DataClass.BlogPost;
+import tim.hku.comp3330.DataClass.User;
 import tim.hku.comp3330.R;
 
 public class BlogAdapter extends RecyclerView.Adapter<BlogHolder> {
     private Context c;
     private ArrayList<BlogPost> model;
-    private DatabaseReference databaseRef;
-
+    private DatabaseReference userRef;
+    private User poster;
     public BlogAdapter(Context c, ArrayList<BlogPost> model) {
         this.c = c;
         this.model = model;
@@ -34,48 +36,51 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogHolder> {
     @NonNull
     @Override
     public BlogHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.blog_post,viewGroup,false);
+        View view = LayoutInflater.from(c).inflate(R.layout.blog_post,viewGroup,false);
 
         return new BlogHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull BlogHolder myHolder, int i) {
-
-        if(model.get(i).getBlogPostPic().equals("True")){
-            int postID = model.get(i).getBlogPostID();
-            databaseRef = FirebaseDatabase.getInstance().getReference("BlogPic");
-            databaseRef.orderByChild("blogId").equalTo(postID).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for(DataSnapshot postSnapShot: dataSnapshot.getChildren()){
-                        BlogPicture picture = postSnapShot.getValue(BlogPicture.class);
-                        myHolder.username.setText("Kaori");
-                        myHolder.content.setText(model.get(i).getContent());
-                        myHolder.mDate.setText(model.get(i).getCreated());
-                        Picasso.with(c)
-                                .load(picture.getImageUrl())
-                                .fit()
-                                .centerCrop()
-                                .into(myHolder.postPic);
-                    }
+        String userID = model.get(i).getOwnerID();
+        userRef = FirebaseDatabase.getInstance().getReference("Users");
+        userRef.orderByChild("userID").equalTo(userID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot postSnapShot: dataSnapshot.getChildren()){
+                    poster = postSnapShot.getValue(User.class);
                 }
+                if(model.get(i).getBlogPostPic()!= null){
+                    Log.d("myTag", "Not null: " + model.get(i).getBlogPostPic());
+                    myHolder.username.setText(poster.getUserName());
+                    myHolder.content.setText(model.get(i).getContent());
+                    myHolder.mDate.setText(model.get(i).getCreated());
+                    Picasso.with(c)
+                            .load(model.get(i).getBlogPostPic())
+                            .fit()
+                            .centerCrop()
+                            .into(myHolder.postPic);
+                }
+                else {
+                    myHolder.postPic.getLayoutParams().height = 0;
+                    myHolder.postPic.requestLayout();
+                    myHolder.username.setText(poster.getUserName());
+                    myHolder.content.setText(model.get(i).getContent());
+                    myHolder.mDate.setText(model.get(i).getCreated());
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
 
                 }
-            });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
 
-        }
-        else {
-            myHolder.username.setText("Kaori");
-            myHolder.content.setText(model.get(i).getContent());
-            myHolder.mDate.setText(model.get(i).getCreated());
 
-
-        }
     }
 
     @Override
