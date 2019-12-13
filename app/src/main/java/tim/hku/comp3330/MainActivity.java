@@ -104,6 +104,8 @@ public class MainActivity extends AppCompatActivity {
             accountMenu.getSubMenu().findItem(R.id.nav_registration).setEnabled(false);
             accountMenu.getSubMenu().findItem(R.id.nav_logout).setVisible(true);
             accountMenu.getSubMenu().findItem(R.id.nav_logout).setEnabled(true);
+            accountMenu.getSubMenu().findItem(R.id.nav_edit_profile).setVisible(true);
+            accountMenu.getSubMenu().findItem(R.id.nav_edit_profile).setEnabled(true);
             accountMenu.getSubMenu().findItem(R.id.nav_logout).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
@@ -140,6 +142,8 @@ public class MainActivity extends AppCompatActivity {
             MenuItem accountMenu = navigationView.getMenu().findItem(R.id.AccountMenu);
             accountMenu.getSubMenu().findItem(R.id.nav_logout).setVisible(false);
             accountMenu.getSubMenu().findItem(R.id.nav_logout).setEnabled(false);
+            accountMenu.getSubMenu().findItem(R.id.nav_edit_profile).setVisible(false);
+            accountMenu.getSubMenu().findItem(R.id.nav_edit_profile).setEnabled(false);
             navController.navigate(R.id.nav_login);
         }
 
