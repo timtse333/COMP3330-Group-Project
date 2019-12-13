@@ -43,6 +43,8 @@ public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
     DatabaseReference userRef;
     User user = new User();
     DatabaseReference relationRef;
+    DatabaseReference msgRef;
+    boolean duplicated = false;
     public projectAdapter(Context c, ArrayList<Project> model) {
         this.c = c;
         this.model = model;
@@ -80,7 +82,7 @@ public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
                         myHolder.join.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                ConstructRequestMessage(userID, proj.getOwnerID(), proj);
+                                CheckExistenceBeforeSent(userID, proj.getOwnerID(), proj);
                                 myHolder.join.setVisibility(View.GONE);
                                 myHolder.join.setEnabled(false);
                             }
@@ -112,6 +114,31 @@ public class projectAdapter extends RecyclerView.Adapter<projectHolder> {
         return model.size();
     }
 
+    public void CheckExistenceBeforeSent(String senderID, String receiverID, Project project){
+        Message msg = new Message();
+        duplicated = false;
+        msgRef = FirebaseDatabase.getInstance().getReference("Message");
+        Query msgQuery = msgRef.orderByChild("projID").equalTo(project.getProjectID());
+        msgQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot child : dataSnapshot.getChildren()){
+                    Message temp = child.getValue(Message.class);
+                    if(temp.getSenderID().equals(senderID) && temp.getReceiverID().equals(receiverID) && !temp.isDeleted()){
+                        duplicated = true;
+                    }
+                }
+                if(!duplicated) {
+                    ConstructRequestMessage(senderID, receiverID, project);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
     public void ConstructRequestMessage(String senderID, String receiverID, Project project){
         Message msg = new Message();
         userRef = FirebaseDatabase.getInstance().getReference("Users");
